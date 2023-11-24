@@ -9,6 +9,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import MenuComponent from "../MenuComponent/MenuComponent";
 
@@ -70,8 +71,15 @@ const NavBar = () => {
             }}
           />
         </InputGroup>
+        <Image objectFit="cover" w="2rem" src="./iconPlayEbook.svg" />
       </Flex>
-      <Image src="./flag/unitedKingdom.svg"></Image>
+      <Flex gap="5" align="center">
+        <Flex gap="5" h="1.5rem">
+          <Image src="./flag/unitedKingdom.svg" />
+          <Image src="./bellNotification.svg" />
+        </Flex>
+        <ConnectButton />
+      </Flex>
     </Flex>
   );
 };
