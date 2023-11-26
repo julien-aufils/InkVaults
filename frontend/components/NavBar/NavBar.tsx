@@ -36,7 +36,7 @@ const NavBar = () => {
       as="nav"
       h="5,5rem"
       py="1rem"
-      px="3rem"
+      px="4rem"
       backgroundColor={"#111318"}
       gap="3"
       align="center"
@@ -44,8 +44,8 @@ const NavBar = () => {
       boxShadow="md"
       pos="sticky"
     >
-      <Link href="./">
-        <Image objectFit="cover" w="11rem" src="./inkVaultsLogo.png" />
+      <Link href="/">
+        <Image objectFit="cover" w="11rem" src="/inkVaultsLogo.png" />
       </Link>
       <Flex gap="3" align="center">
         {menuItems.map((menu, index) => (
@@ -71,12 +71,12 @@ const NavBar = () => {
             }}
           />
         </InputGroup>
-        <Image objectFit="cover" w="2rem" src="./iconPlayEbook.svg" />
+        <Image objectFit="cover" w="2rem" src="/iconPlayEbook.svg" />
       </Flex>
       <Flex gap="5" align="center">
         <Flex gap="5" h="1.5rem">
-          <Image src="./flag/unitedKingdom.svg" />
-          <Image src="./bellNotification.svg" />
+          <Image src="/flag/unitedKingdom.svg" />
+          <Image src="/bellNotification.svg" />
         </Flex>
         <ConnectButton />
       </Flex>
