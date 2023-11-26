@@ -4,16 +4,18 @@ import booksharesData from "/data/bookshares.json";
 
 import BooksharesItemInfo from "../BooksharesItemInfo/BooksharesItemInfo";
 
-const BooksharesTabContent = () => {
-  const [selectedBookshare, setSelectedBookshare] = useState(null);
+const BooksharesTabContent: React.FC = () => {
+  const [selectedBookshare, setSelectedBookshare] = useState<number | null>(
+    null
+  );
 
-  const handleClick = (index) => {
+  const handleClick = (index: number) => {
     setSelectedBookshare((prev) => (prev === index ? null : index));
   };
 
   return (
     <Flex w="100%" direction="column" gap="2rem">
-      {booksharesData.map((bookshare, index) => (
+      {booksharesData.map((bookshare: Bookshare, index: number) => (
         <Flex
           backgroundColor="#111318"
           borderRadius="0.75rem"
@@ -96,5 +98,18 @@ const BooksharesTabContent = () => {
     </Flex>
   );
 };
+
+interface Bookshare {
+  title: string;
+  imgSrc: string;
+  totalShared: string;
+  supply: string;
+  price: string;
+  releaseDate: string;
+  royalties: string;
+  lastPayOutDate: string;
+  lastPayOut: string;
+  totalPayOut: string;
+}
 
 export default BooksharesTabContent;

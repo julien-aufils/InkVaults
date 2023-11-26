@@ -1,6 +1,9 @@
 import { Flex, Text } from "@chakra-ui/react";
 
-const BooksharesItemInfo = ({ label, value }) => {
+const BooksharesItemInfo: React.FC<BooksharesItemInfoProps> = ({
+  label,
+  value,
+}) => {
   return (
     <Flex fontSize="xs" justify="space-between">
       <Text fontWeight="600">{label}</Text>
@@ -8,5 +11,10 @@ const BooksharesItemInfo = ({ label, value }) => {
     </Flex>
   );
 };
+
+interface BooksharesItemInfoProps {
+  label: string;
+  value: string;
+}
 
 export default BooksharesItemInfo;

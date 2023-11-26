@@ -29,13 +29,17 @@ const AuthorProfile = () => {
           <Flex
             backgroundColor="#111318"
             borderRadius="0.75rem"
-            w="20vw"
-            h="25rem"
+            w="25vw"
+            h="32rem"
             justify="center"
           >
-            <Image src="/authorWidgetPlaceholder.png" />
+            <Image
+              src="/authorWidgetPlaceholder.png"
+              objectFit="cover"
+              w="100%"
+            />
           </Flex>
-          <Flex w="80vw">
+          <Flex w="75vw">
             <Tabs as="nav" w="100%" variant="unstyled" defaultIndex={0}>
               <TabList
                 gap="2rem"
