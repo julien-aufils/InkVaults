@@ -22,24 +22,24 @@ const AuthorProfile = () => {
     <Box as="main" backgroundColor="#080A0C" minHeight="100vh">
       <NavBar />
       <Flex px="4rem" py="1rem" direction="column" gap="2rem">
-        <Flex>
+        <Flex justify="center">
           <Image src="/authors/authorBanner.png" />
         </Flex>
         <Flex gap="2rem">
           <Flex
             backgroundColor="#111318"
             borderRadius="0.75rem"
-            w="25vw"
+            w="22vw"
             h="32rem"
             justify="center"
           >
             <Image
               src="/authorWidgetPlaceholder.png"
-              objectFit="cover"
+              objectFit="contain"
               w="100%"
             />
           </Flex>
-          <Flex w="75vw">
+          <Flex w="78vw">
             <Tabs as="nav" w="100%" variant="unstyled" defaultIndex={0}>
               <TabList
                 gap="2rem"

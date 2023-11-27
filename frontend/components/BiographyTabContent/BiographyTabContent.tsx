@@ -1,6 +1,12 @@
 import { Flex, Text } from "@chakra-ui/react";
 
-const BiographyTabContent = ({ authorsData }) => {
+interface BiographyTabContentProps {
+  authorsData: Author[];
+}
+
+const BiographyTabContent: React.FC<BiographyTabContentProps> = ({
+  authorsData,
+}) => {
   return (
     <Flex
       direction="column"
@@ -15,5 +21,11 @@ const BiographyTabContent = ({ authorsData }) => {
     </Flex>
   );
 };
+
+interface Author {
+  id: number;
+  name: string;
+  biography: string;
+}
 
 export default BiographyTabContent;
