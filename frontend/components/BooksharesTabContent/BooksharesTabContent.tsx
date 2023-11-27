@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, Image, Link, Text, Collapse } from "@chakra-ui/react";
+import { Button, Flex, Image, Link, Text, Collapse } from "@chakra-ui/react";
 import booksharesData from "/data/bookshares.json";
 
 import BooksharesItemInfo from "../BooksharesItemInfo/BooksharesItemInfo";
@@ -73,7 +73,7 @@ const BooksharesTabContent: React.FC = () => {
               </Flex>
             </Flex>
           </Flex>
-          <Flex direction="column" justify="center" gap="3rem" align="center">
+          <Flex direction="column" pt="1rem" gap="3rem" align="flex-end">
             <Flex gap="1rem">
               <Image src="/bookshares/percentBookshare.svg" w="35%" />
               <Flex
@@ -89,9 +89,37 @@ const BooksharesTabContent: React.FC = () => {
                 <Text fontSize="xs">per shares</Text>
               </Flex>
             </Flex>
-            <Link fontSize="sm" textColor="#9EAABD" textDecoration="underline">
-              Click to view details
-            </Link>
+            {selectedBookshare !== index && (
+              <Link
+                fontSize="sm"
+                textColor="#9EAABD"
+                textDecoration="underline"
+                textAlign="center"
+              >
+                Click to view details
+              </Link>
+            )}
+            <Collapse in={selectedBookshare === index} animateOpacity>
+              <Flex direction="column" gap="1rem">
+                <Button
+                  backgroundColor="#1CAEBE"
+                  textColor="#FFF"
+                  w="15rem"
+                  h="3.5rem"
+                  borderRadius="3rem"
+                >
+                  Buy $15
+                </Button>
+                <Link
+                  fontSize="sm"
+                  textColor="#00C1FF"
+                  textDecoration="underline"
+                  textAlign="center"
+                >
+                  See 12 offers on marketplace
+                </Link>
+              </Flex>
+            </Collapse>
           </Flex>
         </Flex>
       ))}
