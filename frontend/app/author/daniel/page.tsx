@@ -10,7 +10,6 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import NavBar from "@/components/NavBar/NavBar";
 import ProfileTabItem from "@/components/ProfileTabItem/ProfileTabItem";
 import BiographyTabContent from "@/components/BiographyTabContent/BiographyTabContent";
 import BooksharesTabContent from "@/components/BooksharesTabContent/BooksharesTabContent";
@@ -19,17 +18,21 @@ const AuthorProfile = () => {
   const tabItems = ["Summary", "Community", "Book Shares", "Market"];
 
   return (
-    <Box as="main" backgroundColor="#080A0C" minHeight="100vh">
-      <NavBar />
-      <Flex px="4rem" py="1rem" direction="column" gap="2rem">
+    <Box as="main">
+      <Flex
+        px={{ base: "1rem", md: "4rem" }}
+        py="1rem"
+        direction="column"
+        gap="2rem"
+      >
         <Flex justify="center">
           <Image src="/authors/authorBanner.png" />
         </Flex>
-        <Flex gap="2rem">
+        <Flex gap="2rem" direction={{ base: "column", md: "row" }}>
           <Flex
             backgroundColor="#111318"
             borderRadius="0.75rem"
-            w="22vw"
+            w={{ base: "100%", md: "22vw" }}
             h="32rem"
             justify="center"
           >
@@ -39,10 +42,10 @@ const AuthorProfile = () => {
               w="100%"
             />
           </Flex>
-          <Flex w="78vw">
+          <Flex w={{ base: "100vw", md: "78vw" }}>
             <Tabs as="nav" w="100%" variant="unstyled" defaultIndex={0}>
               <TabList
-                gap="2rem"
+                gap={{ base: "0.5rem", md: "2rem" }}
                 borderBottom="1px"
                 borderColor="rgba(255, 255, 255, 0.5)"
               >

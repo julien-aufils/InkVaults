@@ -5,7 +5,7 @@ import "dotenv/config";
 import "@fontsource/sora";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme, Box } from "@chakra-ui/react";
 import {
   getDefaultWallets,
   RainbowKitProvider,
@@ -15,6 +15,8 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { hardhat, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+
+import NavBar from "@/components/NavBar/NavBar";
 
 const theme = extendTheme({
   fonts: {
@@ -54,7 +56,10 @@ export default function RootLayout({
         <ChakraProvider theme={theme}>
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider theme={darkTheme()} chains={chains}>
-              {children}
+              <NavBar />
+              <Box backgroundColor="#080A0C" minHeight="100vh">
+                {children}
+              </Box>
             </RainbowKitProvider>
           </WagmiConfig>
         </ChakraProvider>

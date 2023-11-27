@@ -34,15 +34,17 @@ const NavBar = () => {
   return (
     <Flex
       as="nav"
-      h="5,5rem"
+      h={{ base: "auto", md: "5.5rem" }}
       py="1rem"
-      px="4rem"
+      px={{ base: "1rem", md: "4rem" }}
       backgroundColor={"#111318"}
       gap="3"
       align="center"
-      justify="space-between"
+      justify={{ base: "center", md: "space-between" }}
       boxShadow="md"
       pos="sticky"
+      top="0"
+      flexWrap="wrap"
     >
       <Link href="/">
         <Image objectFit="cover" w="11rem" src="/inkVaultsLogo.png" />
@@ -55,7 +57,7 @@ const NavBar = () => {
             items={menu.items}
           />
         ))}
-        <InputGroup w="25rem">
+        <InputGroup w={{ base: "100%", md: "25rem" }}>
           <InputLeftElement pointerEvents="none">
             <SearchIcon color="gray.50" />
           </InputLeftElement>
