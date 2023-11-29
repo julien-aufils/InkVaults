@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const booksharesContract = await ethers.deployContract("BookShares");
+  const booksharesContract = await ethers.deployContract("BookShareFactory");
 
   await booksharesContract.waitForDeployment();
 
