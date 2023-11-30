@@ -2,8 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import './BookShare.sol';
 
-// Factory contract for creating BookShare contracts
+/**
+ * @title BookShareFactory
+ * @dev Factory contract for creating BookShare contracts.
+ */
 contract BookShareFactory is Ownable {
     event BookShareCreated(address indexed bookShareContract, address indexed author, uint256 rightsPercentage, uint256 totalShares, uint256 pricePerShare);
 
@@ -12,22 +16,31 @@ contract BookShareFactory is Ownable {
          
     constructor() Ownable(msg.sender){}
 
-    // Function to create a new BookShare contract
+    /**
+     * @dev Creates a new BookShare contract.
+     * @param _name The name of the BookShare contract.
+     * @param _symbol The symbol of the BookShare contract.
+     * @param _rightsPercentage The percentage of rights ceded by the author.
+     * @param _totalShares The total number of Book Shares.
+     * @param _pricePerShare The price of each Book Share in Wei.
+     * @param _baseURI The base URI for token metadata.
+     */
     function createBookShare(
         string memory _name,
         string memory _symbol,
+        address _author,
         uint256 _rightsPercentage,
         uint256 _totalShares,
         uint256 _pricePerShare,
         string memory _baseURI
     ) external onlyOwner {
         // Deploy the BookShare contract
-        BookShare newBookShare = new BookShare(_name, _symbol, msg.sender, _rightsPercentage, _totalShares, _pricePerShare, _baseURI);
+        BookShare newBookShare = new BookShare(_name, _symbol, _author, _rightsPercentage, _totalShares, _pricePerShare, _baseURI);
 
         // Track the Book Share created by the author
-        booksharesByAuthor[msg.sender].push(address(newBookShare));
+        booksharesByAuthor[_author].push(address(newBookShare));
 
         // Emit an event for the new BookShare creation
-        emit BookShareCreated(address(newBookShare), msg.sender, _rightsPercentage, _totalShares, _pricePerShare);
+        emit BookShareCreated(address(newBookShare), _author, _rightsPercentage, _totalShares, _pricePerShare);
     }
 }

@@ -5,7 +5,7 @@ async function main() {
 
   await booksharesContract.waitForDeployment();
 
-  console.log(`BookShares deployed to ${booksharesContract.target}`);
+  console.log(`BookShareFactory deployed to ${booksharesContract.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
