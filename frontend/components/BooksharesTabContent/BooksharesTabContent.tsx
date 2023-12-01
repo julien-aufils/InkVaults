@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, FC } from "react";
 import { Button, Flex, Image, Link, Text, Collapse } from "@chakra-ui/react";
 import booksharesData from "/data/bookshares.json";
+import Bookshare from "@/types/Bookshare";
 
 import BooksharesItemInfo from "../BooksharesItemInfo/BooksharesItemInfo";
 
-const BooksharesTabContent: React.FC = () => {
+const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
+  const authorBookshares = booksharesData.filter(
+    (bookshare: Bookshare) => bookshare.authorId === authorId
+  );
+
   const [selectedBookshare, setSelectedBookshare] = useState<number | null>(
     null
   );
@@ -15,7 +20,7 @@ const BooksharesTabContent: React.FC = () => {
 
   return (
     <Flex w="100%" direction="column" gap="2rem">
-      {booksharesData.map((bookshare: Bookshare, index: number) => (
+      {authorBookshares.map((bookshare: Bookshare, index: number) => (
         <Flex
           backgroundColor="#111318"
           borderRadius="0.75rem"
@@ -126,18 +131,5 @@ const BooksharesTabContent: React.FC = () => {
     </Flex>
   );
 };
-
-interface Bookshare {
-  title: string;
-  imgSrc: string;
-  totalShared: string;
-  supply: string;
-  price: string;
-  releaseDate: string;
-  royalties: string;
-  lastPayOutDate: string;
-  lastPayOut: string;
-  totalPayOut: string;
-}
 
 export default BooksharesTabContent;

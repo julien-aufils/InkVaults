@@ -1,11 +1,12 @@
 import { Flex, Text } from "@chakra-ui/react";
+import Author from "@/types/Author";
 
 interface BiographyTabContentProps {
-  authorsData: Author[];
+  selectedAuthor: Author;
 }
 
 const BiographyTabContent: React.FC<BiographyTabContentProps> = ({
-  authorsData,
+  selectedAuthor,
 }) => {
   return (
     <Flex
@@ -17,15 +18,9 @@ const BiographyTabContent: React.FC<BiographyTabContentProps> = ({
       gap="0.5rem"
     >
       <Text fontWeight="600">Biography</Text>
-      <Text fontSize="sm">{authorsData[0].biography}</Text>
+      <Text fontSize="sm">{selectedAuthor.biography}</Text>
     </Flex>
   );
 };
-
-interface Author {
-  id: number;
-  name: string;
-  biography: string;
-}
 
 export default BiographyTabContent;
