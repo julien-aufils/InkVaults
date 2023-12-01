@@ -1,6 +1,7 @@
 [
   {
     "title": "The Three-Body Problem",
+    "authorId": 2,
     "imgSrc": "/bookshares/bookshare1.png",
     "totalShared": "15 %",
     "supply": "76 / 150",
@@ -13,6 +14,7 @@
   },
   {
     "title": "The Dark Forest",
+    "authorId": 2,
     "imgSrc": "/bookshares/bookshare2.png",
     "totalShared": "20 %",
     "supply": "100 / 200",
@@ -25,6 +27,7 @@
   },
   {
     "title": "Death's End",
+    "authorId": 2,
     "imgSrc": "/bookshares/bookshare3.png",
     "totalShared": "10 %",
     "supply": "50 / 100",
@@ -34,5 +37,18 @@
     "lastPayOutDate": "Jan 10, 2024",
     "lastPayOut": "$500",
     "totalPayOut": "$7,200"
+  },
+  {
+    "title": "Alice au pays des cryptos",
+    "authorId": 1,
+    "imgSrc": "/bookshares/bookshare1.png",
+    "totalShared": "25 %",
+    "supply": "13 / 50",
+    "price": "$50 for 0.5%",
+    "releaseDate": "Nov 19, 2023",
+    "royalties": "Quarterly",
+    "lastPayOutDate": "- -",
+    "lastPayOut": "- -",
+    "totalPayOut": "- -"
   }
 ]
