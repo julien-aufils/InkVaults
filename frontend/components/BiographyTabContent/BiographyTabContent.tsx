@@ -5,7 +5,7 @@ interface BiographyTabContentProps {
 }
 
 const BiographyTabContent: React.FC<BiographyTabContentProps> = ({
-  authorsData,
+  selectedAuthor,
 }) => {
   return (
     <Flex
@@ -17,7 +17,7 @@ const BiographyTabContent: React.FC<BiographyTabContentProps> = ({
       gap="0.5rem"
     >
       <Text fontWeight="600">Biography</Text>
-      <Text fontSize="sm">{authorsData[0].biography}</Text>
+      <Text fontSize="sm">{selectedAuthor.biography}</Text>
     </Flex>
   );
 };

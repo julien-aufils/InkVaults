@@ -4,7 +4,11 @@ import booksharesData from "/data/bookshares.json";
 
 import BooksharesItemInfo from "../BooksharesItemInfo/BooksharesItemInfo";
 
-const BooksharesTabContent: React.FC = () => {
+const BooksharesTabContent: React.FC = ({ authorId }) => {
+  const authorBookshares = booksharesData.filter(
+    (bookshare) => bookshare.authorId === authorId
+  );
+
   const [selectedBookshare, setSelectedBookshare] = useState<number | null>(
     null
   );
@@ -15,7 +19,7 @@ const BooksharesTabContent: React.FC = () => {
 
   return (
     <Flex w="100%" direction="column" gap="2rem">
-      {booksharesData.map((bookshare: Bookshare, index: number) => (
+      {authorBookshares.map((bookshare: Bookshare, index: number) => (
         <Flex
           backgroundColor="#111318"
           borderRadius="0.75rem"

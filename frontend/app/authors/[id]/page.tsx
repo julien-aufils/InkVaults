@@ -1,5 +1,4 @@
 "use client";
-import authorsData from "/data/authors.json";
 
 import {
   Box,
@@ -9,12 +8,25 @@ import {
   TabList,
   TabPanels,
   TabPanel,
+  Text,
 } from "@chakra-ui/react";
 import ProfileTabItem from "@/components/ProfileTabItem/ProfileTabItem";
 import BiographyTabContent from "@/components/BiographyTabContent/BiographyTabContent";
 import BooksharesTabContent from "@/components/BooksharesTabContent/BooksharesTabContent";
+import authorsData from "/data/authors.json";
 
-const AuthorProfile = () => {
+const AuthorProfile = (props) => {
+  const selectedAuthor = authorsData.find(
+    (author) => author.id === parseInt(props.params.id)
+  );
+
+  if (!selectedAuthor) {
+    return (
+      <Text p="1rem" textColor="#fff">
+        Author not found
+      </Text>
+    );
+  }
   const tabItems = ["Summary", "Community", "Book Shares", "Market"];
 
   return (
@@ -26,7 +38,7 @@ const AuthorProfile = () => {
         gap="2rem"
       >
         <Flex justify="center">
-          <Image src="/authors/authorBanner.png" />
+          <Image src={selectedAuthor.bannerUrl} />
         </Flex>
         <Flex gap="2rem" direction={{ base: "column", md: "row" }}>
           <Flex
@@ -37,7 +49,7 @@ const AuthorProfile = () => {
             justify="center"
           >
             <Image
-              src="/authorWidgetPlaceholder.png"
+              src={selectedAuthor.widgetUrl}
               objectFit="contain"
               w="100%"
             />
@@ -57,7 +69,7 @@ const AuthorProfile = () => {
               <TabPanels textColor="#FFF">
                 {/* SUMMARY */}
                 <TabPanel display="flex" px="0" py="1.5rem">
-                  <BiographyTabContent authorsData={authorsData} />
+                  <BiographyTabContent selectedAuthor={selectedAuthor} />
                 </TabPanel>
 
                 {/* COMMUNITY */}
@@ -67,7 +79,7 @@ const AuthorProfile = () => {
 
                 {/* BOOK SHARES */}
                 <TabPanel display="flex" px="0" py="1.5rem">
-                  <BooksharesTabContent />
+                  <BooksharesTabContent authorId={selectedAuthor.id} />
                 </TabPanel>
 
                 {/* MARKET */}
