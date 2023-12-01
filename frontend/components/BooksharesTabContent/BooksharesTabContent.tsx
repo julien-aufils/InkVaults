@@ -1,5 +1,6 @@
 import { useState, FC } from "react";
-import { Flex, Image, Link, Text, Collapse } from "@chakra-ui/react";
+import { Button, Flex, Image, Link, Text, Collapse } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import booksharesData from "/data/bookshares.json";
 import Bookshare from "@/types/Bookshare";
 
@@ -78,7 +79,13 @@ const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
               </Flex>
             </Flex>
           </Flex>
-          <Flex direction="column" justify="center" gap="3rem" align="center">
+          <Flex
+            direction="column"
+            pt="1rem"
+            gap="3rem"
+            align="flex-end"
+            justify="center"
+          >
             <Flex gap="1rem">
               <Image src="/bookshares/percentBookshare.svg" w="35%" />
               <Flex
@@ -94,9 +101,46 @@ const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
                 <Text fontSize="xs">per shares</Text>
               </Flex>
             </Flex>
-            <Link fontSize="sm" textColor="#9EAABD" textDecoration="underline">
-              Click to view details
-            </Link>
+            <Collapse in={selectedBookshare !== index} animateOpacity>
+              <Link
+                as={motion.div}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                fontSize="sm"
+                textColor="#9EAABD"
+                textDecoration="underline"
+                textAlign="center"
+              >
+                Click to view details
+              </Link>
+            </Collapse>
+            <Collapse in={selectedBookshare === index} animateOpacity>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+              >
+                <Flex direction="column" gap="1rem">
+                  <Button
+                    backgroundColor="#1CAEBE"
+                    textColor="#FFF"
+                    w="15rem"
+                    h="3.5rem"
+                    borderRadius="3rem"
+                  >
+                    Buy $15
+                  </Button>
+                  <Link
+                    fontSize="sm"
+                    textColor="#00C1FF"
+                    textDecoration="underline"
+                    textAlign="center"
+                  >
+                    See 12 offers on the marketplace
+                  </Link>
+                </Flex>
+              </motion.div>
+            </Collapse>
           </Flex>
         </Flex>
       ))}
