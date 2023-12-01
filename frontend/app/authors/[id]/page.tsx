@@ -1,5 +1,6 @@
 "use client";
 
+import { FC } from "react";
 import {
   Box,
   Flex,
@@ -14,10 +15,11 @@ import ProfileTabItem from "@/components/ProfileTabItem/ProfileTabItem";
 import BiographyTabContent from "@/components/BiographyTabContent/BiographyTabContent";
 import BooksharesTabContent from "@/components/BooksharesTabContent/BooksharesTabContent";
 import authorsData from "/data/authors.json";
+import Author from "@/types/Author";
 
-const AuthorProfile = (props) => {
-  const selectedAuthor = authorsData.find(
-    (author) => author.id === parseInt(props.params.id)
+const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
+  const selectedAuthor: Author | undefined = authorsData.find(
+    (author: Author) => author.id === parseInt(params.id)
   );
 
   if (!selectedAuthor) {
@@ -94,5 +96,11 @@ const AuthorProfile = (props) => {
     </Box>
   );
 };
+
+interface AuthorProfileProps {
+  params: {
+    id: string;
+  };
+}
 
 export default AuthorProfile;
