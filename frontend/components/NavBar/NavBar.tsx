@@ -1,5 +1,6 @@
 "use client";
 
+import NextLink from "next/link";
 import {
   Flex,
   Image,
@@ -46,7 +47,7 @@ const NavBar = () => {
       top="0"
       flexWrap="wrap"
     >
-      <Link href="/">
+      <Link as={NextLink} href="/">
         <Image objectFit="cover" w="11rem" src="/inkVaultsLogo.png" />
       </Link>
       <Flex gap="3" align="center">
