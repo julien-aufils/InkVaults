@@ -79,7 +79,13 @@ const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
               </Flex>
             </Flex>
           </Flex>
-          <Flex direction="column" pt="1rem" gap="3rem" align="flex-end">
+          <Flex
+            direction="column"
+            pt="1rem"
+            gap="3rem"
+            align="flex-end"
+            justify="center"
+          >
             <Flex gap="1rem">
               <Image src="/bookshares/percentBookshare.svg" w="35%" />
               <Flex
@@ -95,11 +101,8 @@ const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
                 <Text fontSize="xs">per shares</Text>
               </Flex>
             </Flex>
-            <Collapse in={selectedBookshare !== index} animateOpacity>
+            {selectedBookshare !== index ? (
               <Link
-                as={motion.div}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
                 fontSize="sm"
                 textColor="#9EAABD"
                 textDecoration="underline"
@@ -107,34 +110,27 @@ const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
               >
                 Click to view details
               </Link>
-            </Collapse>
-            <Collapse in={selectedBookshare === index} animateOpacity>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-              >
-                <Flex direction="column" gap="1rem">
-                  <Button
-                    backgroundColor="#1CAEBE"
-                    textColor="#FFF"
-                    w="15rem"
-                    h="3.5rem"
-                    borderRadius="3rem"
-                  >
-                    Buy $15
-                  </Button>
-                  <Link
-                    fontSize="sm"
-                    textColor="#00C1FF"
-                    textDecoration="underline"
-                    textAlign="center"
-                  >
-                    See 12 offers on the marketplace
-                  </Link>
-                </Flex>
-              </motion.div>
-            </Collapse>
+            ) : (
+              <Flex direction="column" gap="1rem">
+                <Button
+                  backgroundColor="#1CAEBE"
+                  textColor="#FFF"
+                  w="15rem"
+                  h="3.5rem"
+                  borderRadius="3rem"
+                >
+                  Buy $15
+                </Button>
+                <Link
+                  fontSize="sm"
+                  textColor="#00C1FF"
+                  textDecoration="underline"
+                  textAlign="center"
+                >
+                  See 12 offers on marketplace
+                </Link>
+              </Flex>
+            )}
           </Flex>
         </Flex>
       ))}
