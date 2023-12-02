@@ -1,6 +1,6 @@
 import { useState, FC } from "react";
 import { Button, Flex, Image, Link, Text, Collapse } from "@chakra-ui/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import booksharesData from "/data/bookshares.json";
 import Bookshare from "@/types/Bookshare";
 
@@ -79,13 +79,7 @@ const BooksharesTabContent: FC<{ authorId: number }> = ({ authorId }) => {
               </Flex>
             </Flex>
           </Flex>
-          <Flex
-            direction="column"
-            pt="1rem"
-            gap="3rem"
-            align="flex-end"
-            justify="center"
-          >
+          <Flex direction="column" pt="1rem" gap="3rem" align="flex-end">
             <Flex gap="1rem">
               <Image src="/bookshares/percentBookshare.svg" w="35%" />
               <Flex
