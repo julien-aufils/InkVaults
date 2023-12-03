@@ -3,52 +3,76 @@
     "title": "The Three-Body Problem",
     "authorId": 2,
     "imgSrc": "/bookshares/bookshare1.png",
-    "totalShared": "15 %",
-    "supply": "76 / 150",
-    "price": "$15 for 0.1%",
+    "totalSharedPercentage": 15,
+    "supply": {
+      "available": 76,
+      "total": 150
+    },
+    "price": {
+      "amount": 15,
+      "percentage": 0.1
+    },
     "releaseDate": "June 24, 2022",
     "royalties": "Monthly",
     "lastPayOutDate": "Nov 28, 2023",
-    "lastPayOut": "$634.5",
-    "totalPayOut": "$9,078"
+    "lastPayOut": 634.5,
+    "totalPayOut": 9078
   },
   {
     "title": "The Dark Forest",
     "authorId": 2,
     "imgSrc": "/bookshares/bookshare2.png",
-    "totalShared": "20 %",
-    "supply": "100 / 200",
-    "price": "$20 for 0.2%",
+    "totalSharedPercentage": 20,
+    "supply": {
+      "available": 100,
+      "total": 200
+    },
+    "price": {
+      "amount": 20,
+      "percentage": 0.2
+    },
     "releaseDate": "July 15, 2022",
     "royalties": "Bi-Monthly",
     "lastPayOutDate": "Dec 15, 2023",
-    "lastPayOut": "$800",
-    "totalPayOut": "$12,500"
+    "lastPayOut": 800,
+    "totalPayOut": 12500
   },
   {
     "title": "Death's End",
     "authorId": 2,
     "imgSrc": "/bookshares/bookshare3.png",
-    "totalShared": "10 %",
-    "supply": "50 / 100",
-    "price": "$10 for 0.1%",
+    "totalSharedPercentage": 10,
+    "supply": {
+      "available": 50,
+      "total": 100
+    },
+    "price": {
+      "amount": 10,
+      "percentage": 0.1
+    },
     "releaseDate": "August 8, 2022",
     "royalties": "Quarterly",
     "lastPayOutDate": "Jan 10, 2024",
-    "lastPayOut": "$500",
-    "totalPayOut": "$7,200"
+    "lastPayOut": 500,
+    "totalPayOut": 7200
   },
   {
     "title": "Alice au pays des cryptos",
     "authorId": 1,
-    "imgSrc": "/bookshares/bookshare1.png",
-    "totalShared": "25 %",
-    "supply": "13 / 50",
-    "price": "$50 for 0.5%",
+    "imgSrc": "/bookshares/bookshare4.png",
+    "totalSharedPercentage": 25,
+    "supply": {
+      "available": 13,
+      "total": 50
+    },
+    "price": {
+      "amount": 50,
+      "percentage": 0.5
+    },
     "releaseDate": "Nov 19, 2023",
     "royalties": "Quarterly",
-    "lastPayOutDate": "- -",
-    "lastPayOut": "- -",
-    "totalPayOut": "- -"
+    "lastPayOutDate": "",
+    "lastPayOut": "",
+    "totalPayOut": ""
   }
 ]
