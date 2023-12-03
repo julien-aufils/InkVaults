@@ -19,6 +19,8 @@ import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { FC, useState } from "react";
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
 import Bookshare from "@/types/Bookshare";
+import Author from "@/types/Author";
+
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
 import BuyBookshareButton from "../UI/BuyBookshareButton";
 
@@ -27,6 +29,7 @@ interface ModalBuyBookshareProps {
   onClose: () => void;
   isOpen: boolean;
   selectedBookshare: Bookshare | null;
+  selectedAuthor: Author;
 }
 
 const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
@@ -34,6 +37,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   onClose,
   isOpen,
   selectedBookshare,
+  selectedAuthor,
 }) => {
   const [booksharesNbToBuy, setBooksharesNbToBuy] = useState(1);
 
@@ -80,7 +84,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                   {selectedBookshare.title}
                 </Heading>
                 <Heading size="Lg" fontWeight="400" textColor="#A6A6A6">
-                  {selectedBookshare.authorId}
+                  {selectedAuthor.name}
                 </Heading>
               </Flex>
             </ModalHeader>

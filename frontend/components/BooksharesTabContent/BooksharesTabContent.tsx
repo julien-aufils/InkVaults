@@ -9,7 +9,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import booksharesData from "/data/bookshares.json";
+import authorsData from "/data/authors.json";
+
 import Bookshare from "@/types/Bookshare";
+import Author from "@/types/Author";
 
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
 import ModalBuyBookshare from "../ModalBuyBookshare/ModalBuyBookshare";
@@ -20,6 +23,10 @@ const BooksharesTabContent: FC<{
   authorId: number;
   setTabIndex: Function;
 }> = ({ authorId, setTabIndex }) => {
+  const selectedAuthor = authorsData.find(
+    (author: Author) => author.id === authorId
+  );
+
   const authorBookshares = booksharesData.filter(
     (bookshare: Bookshare) => bookshare.authorId === authorId
   );
@@ -118,6 +125,7 @@ const BooksharesTabContent: FC<{
         selectedBookshare={
           selectedBookshare !== null ? booksharesData[selectedBookshare] : null
         }
+        selectedAuthor={selectedAuthor}
       />
     </Flex>
   );
