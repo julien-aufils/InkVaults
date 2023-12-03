@@ -1,15 +1,21 @@
 interface Bookshare {
-  authorId: number; // Ajoutez cette ligne
   title: string;
+  authorId: number;
   imgSrc: string;
-  totalShared: string;
-  supply: string;
-  price: string;
+  totalSharedPercentage: number;
+  supply: {
+    available: number;
+    total: number;
+  };
+  price: {
+    amount: number;
+    percentage: number;
+  };
   releaseDate: string;
   royalties: string;
   lastPayOutDate: string;
-  lastPayOut: string;
-  totalPayOut: string;
+  lastPayOut: string | number;
+  totalPayOut: string | number;
 }
 
 export default Bookshare;

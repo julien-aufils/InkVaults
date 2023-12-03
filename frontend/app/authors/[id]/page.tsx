@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
   Flex,
   Image,
@@ -17,6 +17,12 @@ import authorsData from "/data/authors.json";
 import Author from "@/types/Author";
 
 const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const handleTabsChange = (index) => {
+    setTabIndex(index);
+  };
+
   const selectedAuthor: Author | undefined = authorsData.find(
     (author: Author) => author.id === parseInt(params.id)
   );
@@ -46,7 +52,13 @@ const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
           <Image src={selectedAuthor.widgetUrl} objectFit="contain" w="100%" />
         </Flex>
         <Flex w={{ base: "100vw", md: "78vw" }}>
-          <Tabs as="nav" w="100%" variant="unstyled" defaultIndex={0}>
+          <Tabs
+            as="nav"
+            w="100%"
+            variant="unstyled"
+            index={tabIndex}
+            onChange={handleTabsChange}
+          >
             <TabList
               gap={{ base: "0.5rem", md: "2rem" }}
               borderBottom="1px"
@@ -70,7 +82,10 @@ const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
 
               {/* BOOK SHARES */}
               <TabPanel display="flex" px="0" py="1.5rem">
-                <BooksharesTabContent authorId={selectedAuthor.id} />
+                <BooksharesTabContent
+                  authorId={selectedAuthor.id}
+                  setTabIndex={setTabIndex}
+                />
               </TabPanel>
 
               {/* MARKET */}
