@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 import { Collapse, Flex, List, ListItem, Text } from "@chakra-ui/react";
 import BookshareExtendedInfo from "../BookshareExtendedInfo/BookshareExtendedInfo";
 import Bookshare from "@/types/Bookshare";
