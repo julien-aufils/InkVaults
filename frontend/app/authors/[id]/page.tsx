@@ -19,7 +19,7 @@ import Author from "@/types/Author";
 const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
   const [tabIndex, setTabIndex] = useState(0);
 
-  const handleTabsChange = (index) => {
+  const handleTabsChange = (index: number) => {
     setTabIndex(index);
   };
 
