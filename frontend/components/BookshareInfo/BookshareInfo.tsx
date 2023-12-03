@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Collapse, Flex, List, ListItem, Text } from "@chakra-ui/react";
 import BookshareExtendedInfo from "../BookshareExtendedInfo/BookshareExtendedInfo";
 import Bookshare from "@/types/Bookshare";
@@ -6,15 +6,22 @@ import Bookshare from "@/types/Bookshare";
 interface BookshareInfoProps {
   bookshare: Bookshare;
   isSelected: boolean;
+  customStyle?: React.CSSProperties | null;
 }
 
 const BookshareInfo: React.FC<BookshareInfoProps> = ({
   bookshare,
   isSelected,
+  customStyle,
 }) => {
   return (
     <>
-      <List display="flex" flexDirection="column" gap="0.2rem">
+      <List
+        display="flex"
+        flexDirection="column"
+        gap="0.2rem"
+        style={customStyle || undefined}
+      >
         <ListItem display="flex" justifyContent="space-between" fontSize="sm">
           <Text fontWeight="600">Total shared</Text>
           <Text fontWeight="600">{bookshare.totalSharedPercentage} %</Text>
