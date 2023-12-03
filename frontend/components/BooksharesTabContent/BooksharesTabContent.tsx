@@ -1,9 +1,20 @@
 import { useState, FC } from "react";
-import { Button, Flex, Image, Link, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Image,
+  Link,
+  Modal,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import booksharesData from "/data/bookshares.json";
 import Bookshare from "@/types/Bookshare";
 
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
+import ModalBuyBookshare from "../ModalBuyBookshare/ModalBuyBookshare";
+import BuyBookshareButton from "../UI/BuyBookshareButton";
+import PercentBookshareInfo from "../UI/PercentBookshareInfo";
 
 const BooksharesTabContent: FC<{
   authorId: number;
@@ -18,8 +29,10 @@ const BooksharesTabContent: FC<{
   );
 
   const handleClick = (index: number) => {
-    setSelectedBookshare((prev) => (prev === index ? null : index));
+    setSelectedBookshare(index);
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Flex w="100%" direction="column" gap="2rem">
@@ -63,45 +76,28 @@ const BooksharesTabContent: FC<{
               gap={selectedBookshare !== index ? "3rem" : "5rem"}
               align="flex-end"
             >
-              <Flex gap="1rem">
-                <Image src="/bookshares/percentBookshare.svg" w="35%" />
-                <Flex
-                  direction="column"
-                  w="70%"
-                  justify="center"
-                  textColor="#1CAEBE"
-                  fontWeight="700"
-                >
-                  <Text fontSize="3xl" lineHeight="2rem">
-                    {bookshare.price.percentage} %
-                  </Text>
-                  <Text fontSize="xs">per shares</Text>
-                </Flex>
-              </Flex>
+              <PercentBookshareInfo percentage={bookshare.price.percentage} />
+
               {!isSelected ? (
                 <Link
                   fontSize="sm"
                   textColor="#9EAABD"
-                  textDecoration="underline"
                   textAlign="center"
+                  textDecoration="underline"
                 >
                   Click to view details
                 </Link>
               ) : (
                 <Flex direction="column" gap="1rem">
-                  <Button
-                    backgroundColor="#1CAEBE"
-                    textColor="#FFF"
-                    w="15rem"
-                    h="3.5rem"
-                    borderRadius="3rem"
-                  >
-                    Buy ${bookshare.price.amount}
-                  </Button>
+                  <BuyBookshareButton
+                    onClick={onOpen}
+                    amount={bookshare.price.amount}
+                  />
                   <Link
                     fontSize="sm"
-                    textColor="#00C1FF"
-                    textDecoration="underline"
+                    bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
+                    bgClip="text"
+                    _hover={{ textColor: "#fff", textDecoration: "underline" }}
                     textAlign="center"
                     onClick={() => {
                       setTabIndex(3);
@@ -115,6 +111,14 @@ const BooksharesTabContent: FC<{
           </Flex>
         );
       })}
+      <ModalBuyBookshare
+        onOpen={onOpen}
+        onClose={onClose}
+        isOpen={isOpen}
+        selectedBookshare={
+          selectedBookshare !== null ? booksharesData[selectedBookshare] : null
+        }
+      />
     </Flex>
   );
 };
