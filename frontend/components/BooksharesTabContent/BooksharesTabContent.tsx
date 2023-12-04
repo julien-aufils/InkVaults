@@ -2,7 +2,6 @@ import { useState, useEffect, FC } from "react";
 import { Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
 import { readContract } from "wagmi/actions";
 import { fetchFromIPFS } from "@/utils/ipfs";
-import booksharesData from "/data/bookshares.json";
 import authorsData from "/data/authors.json";
 
 import Bookshare from "@/types/Bookshare";
@@ -84,7 +83,6 @@ const BooksharesTabContent: FC<{
         );
 
         const bookshares = await getMetadataForBookshares(bookshareURIs);
-        console.log(bookshares);
         setAuthorBookshares(bookshares);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -92,7 +90,7 @@ const BooksharesTabContent: FC<{
     };
 
     fetchData();
-  }, []);
+  }, [authorId]);
 
   const selectedAuthor = authorsData.find(
     (author: Author) => author.id === authorId
@@ -190,7 +188,9 @@ const BooksharesTabContent: FC<{
         onClose={onClose}
         isOpen={isOpen}
         selectedBookshare={
-          selectedBookshare !== null ? booksharesData[selectedBookshare] : null
+          selectedBookshare !== null
+            ? authorBookshares[selectedBookshare]
+            : null
         }
         selectedAuthor={selectedAuthor}
       />
