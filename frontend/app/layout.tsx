@@ -26,16 +26,17 @@ const theme = extendTheme({
 });
 
 const { chains, publicClient } = configureChains(
-  [hardhat, polygonMumbai],
+  [polygonMumbai],
   [
     publicProvider(),
     alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
   ]
 );
 
+const WALLET_CONNECT_ID = "4a5edee207db822d4c4f5e8c64b8537c";
 const { connectors } = getDefaultWallets({
-  appName: "InkVaults Project",
-  projectId: "fd0396dd8112284099c7567219b60051",
+  appName: "InkVaults",
+  projectId: WALLET_CONNECT_ID,
   chains,
 });
 

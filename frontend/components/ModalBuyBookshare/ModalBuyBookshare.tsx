@@ -78,7 +78,10 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
               borderBottom="1px"
               borderColor="rgba(255, 255, 255, 0.5)"
             >
-              <Image objectFit="contain" src={selectedBookshare.imgSrc} />
+              <Image
+                objectFit="contain"
+                src={URL.createObjectURL(selectedBookshare.imageBookshare)}
+              />
               <Flex direction="column" justify="center" gap="1rem">
                 <Heading fontWeight="700" size="lg">
                   {selectedBookshare.title}

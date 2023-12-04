@@ -1,14 +1,7 @@
-import { useState, FC } from "react";
-import {
-  Button,
-  Flex,
-  Image,
-  Link,
-  Modal,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
-import booksharesData from "/data/bookshares.json";
+import { useState, useEffect, FC } from "react";
+import { Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { readContract } from "wagmi/actions";
+import { fetchFromIPFS } from "@/utils/ipfs";
 import authorsData from "/data/authors.json";
 
 import Bookshare from "@/types/Bookshare";
@@ -19,16 +12,89 @@ import ModalBuyBookshare from "../ModalBuyBookshare/ModalBuyBookshare";
 import BuyBookshareButton from "../UI/BuyBookshareButton";
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
 
+import {
+  bookshareFactoryAddress,
+  abiBookshareFactory,
+  abiBookshare,
+} from "@/constants";
+
 const BooksharesTabContent: FC<{
   authorId: number;
+  authorAddr: string;
   setTabIndex: Function;
-}> = ({ authorId, setTabIndex }) => {
+}> = ({ authorId, authorAddr, setTabIndex }) => {
+  const [authorBookshares, setAuthorBookshares] = useState<Bookshare[]>([]);
+
+  // Request to BookshareFactory contract : Get all the bookshares addresses of authorId
+  const getBooksharesAddr = async () => {
+    try {
+      const booksharesAddr = await readContract({
+        address: bookshareFactoryAddress,
+        abi: abiBookshareFactory,
+        functionName: "getBookSharesByAuthor",
+        args: [authorAddr],
+      });
+
+      console.log(booksharesAddr);
+      return booksharesAddr;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Request to Bookshare contract : Get URI of the bookshares
+  const getBookshareURI = async (bookshareAddr: any) => {
+    try {
+      const bookshareURI = await readContract({
+        address: bookshareAddr,
+        abi: abiBookshare,
+        functionName: "bookshareURI",
+      });
+
+      return bookshareURI;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Request to IPFS : Get Metadata and image of the bookshares
+  const getMetadataForBookshares = async (bookshareURIs: string[]) => {
+    try {
+      const bookshares = await Promise.all(
+        bookshareURIs.map(async (uri) => {
+          const { metadata, imageBookshare } = await fetchFromIPFS(uri);
+          return { ...metadata, imageBookshare };
+        })
+      );
+      return bookshares;
+    } catch (error) {
+      console.error("Error fetching metadata:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const booksharesAddr: any = await getBooksharesAddr();
+        const bookshareURIs = await Promise.all(
+          booksharesAddr.map(async (bookshareAddr: string) => {
+            return await getBookshareURI(bookshareAddr);
+          })
+        );
+
+        const bookshares = await getMetadataForBookshares(bookshareURIs);
+        setAuthorBookshares(bookshares);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData();
+  }, [authorId]);
+
   const selectedAuthor = authorsData.find(
     (author: Author) => author.id === authorId
-  );
-
-  const authorBookshares = booksharesData.filter(
-    (bookshare: Bookshare) => bookshare.authorId === authorId
   );
 
   const [selectedBookshare, setSelectedBookshare] = useState<number | null>(
@@ -43,7 +109,7 @@ const BooksharesTabContent: FC<{
 
   return (
     <Flex w="100%" direction="column" gap="2rem">
-      {authorBookshares.map((bookshare: Bookshare, index: number) => {
+      {authorBookshares?.map((bookshare: Bookshare, index: number) => {
         const isSelected = selectedBookshare === index;
         return (
           <Flex
@@ -61,7 +127,7 @@ const BooksharesTabContent: FC<{
             <Flex gap="1rem" w="50%">
               <Image
                 objectFit="contain"
-                src={bookshare.imgSrc}
+                src={URL.createObjectURL(bookshare.imageBookshare)}
                 w={selectedBookshare === index ? "60%" : "40%"}
                 transition="width 0.3s ease-in-out"
               />
@@ -83,7 +149,7 @@ const BooksharesTabContent: FC<{
               gap={selectedBookshare !== index ? "3rem" : "5rem"}
               align="flex-end"
             >
-              <PercentBookshareInfo percentage={bookshare.price.percentage} />
+              <PercentBookshareInfo percentage={bookshare.price?.percentage} />
 
               {!isSelected ? (
                 <Link
@@ -98,7 +164,7 @@ const BooksharesTabContent: FC<{
                 <Flex direction="column" gap="1rem">
                   <BuyBookshareButton
                     onClick={onOpen}
-                    amount={bookshare.price.amount}
+                    amount={bookshare.price?.amount}
                   />
                   <Link
                     fontSize="sm"
@@ -123,7 +189,9 @@ const BooksharesTabContent: FC<{
         onClose={onClose}
         isOpen={isOpen}
         selectedBookshare={
-          selectedBookshare !== null ? booksharesData[selectedBookshare] : null
+          selectedBookshare !== null
+            ? authorBookshares[selectedBookshare]
+            : null
         }
         selectedAuthor={selectedAuthor}
       />
