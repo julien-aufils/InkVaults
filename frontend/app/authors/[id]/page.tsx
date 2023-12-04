@@ -18,6 +18,7 @@ import Author from "@/types/Author";
 
 const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const tabItems = ["Summary", "Community", "Book Shares", "Market"];
 
   const handleTabsChange = (index: number) => {
     setTabIndex(index);
@@ -34,7 +35,6 @@ const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
       </Text>
     );
   }
-  const tabItems = ["Summary", "Community", "Book Shares", "Market"];
 
   return (
     <>
@@ -84,6 +84,11 @@ const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
               <TabPanel display="flex" px="0" py="1.5rem">
                 <BooksharesTabContent
                   authorId={selectedAuthor.id}
+                  authorAddr={
+                    process.env.APP_STATE !== "production"
+                      ? selectedAuthor.localAddr
+                      : ""
+                  }
                   setTabIndex={setTabIndex}
                 />
               </TabPanel>

@@ -1,7 +1,7 @@
 interface Bookshare {
   title: string;
   authorId: number;
-  imgSrc: string;
+  imageBookshare: Blob;
   totalSharedPercentage: number;
   supply: {
     available: number;

@@ -13,7 +13,7 @@ import {
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { hardhat, polygon, polygonMumbai } from "wagmi/chains";
+import { hardhat, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
@@ -25,8 +25,6 @@ const theme = extendTheme({
     heading: "Sora, sans-serif",
   },
 });
-
-console.log(process.env.APP_STATE);
 
 const { chains, publicClient } = configureChains(
   process.env.APP_STATE !== "production"

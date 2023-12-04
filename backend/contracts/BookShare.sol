@@ -67,8 +67,7 @@ contract BookShare is ERC721, Ownable {
      * @return A string representing the BookShare URI.
      */
     function bookshareURI() public view returns(string memory) {
-         // "ipfs://CID/metadata.json"
-        return bytes(bookShareData.baseURI).length > 0 ? string.concat(bookShareData.baseURI, "metadata.json") : "";
+        return bookShareData.baseURI;
     }
 
 
