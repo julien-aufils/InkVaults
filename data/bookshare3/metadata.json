@@ -1,0 +1,18 @@
+{
+  "title": "Death's End",
+  "authorId": 2,
+  "totalSharedPercentage": 10,
+  "supply": {
+    "available": 50,
+    "total": 100
+  },
+  "price": {
+    "amount": 10,
+    "percentage": 0.1
+  },
+  "releaseDate": "August 8, 2022",
+  "royalties": "Quarterly",
+  "lastPayOutDate": "Jan 10, 2024",
+  "lastPayOut": 500,
+  "totalPayOut": 7200
+}

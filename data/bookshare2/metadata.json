@@ -1,0 +1,18 @@
+{
+  "title": "The Dark Forest",
+  "authorId": 2,
+  "totalSharedPercentage": 20,
+  "supply": {
+    "available": 100,
+    "total": 200
+  },
+  "price": {
+    "amount": 20,
+    "percentage": 0.2
+  },
+  "releaseDate": "July 15, 2022",
+  "royalties": "Bi-Monthly",
+  "lastPayOutDate": "Dec 15, 2023",
+  "lastPayOut": 800,
+  "totalPayOut": 12500
+}

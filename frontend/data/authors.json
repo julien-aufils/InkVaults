@@ -2,6 +2,8 @@
   {
     "id": 1,
     "name": "Daniel Villa Monteiro",
+    "localAddr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    "mumbaiAddr": "0xfFA13a19DFdAaD83ecD0c089C0A05752984cD026",
     "biography": "Daniel Villa Monteiro is the educational director of Alyra, a school dedicated to blockchain. He has been teaching and developing digital applications for more than 20 years and is interested in different blockchains on both a technical and societal level. His new challenge: to raise awareness and promote the adoption of blockchain in comics.",
     "widgetUrl": "/widgets/danielWidget.png",
     "bannerUrl": "/banners/danielBanner.png"
@@ -9,6 +11,8 @@
   {
     "id": 2,
     "name": "Lui Cixin",
+    "localAddr": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "mumbaiAddr": "0xb0e9769001a3B7eA2440b492426484FD10B16183",
     "biography": "Liu Cixin (Chinese: 刘慈欣) is a Chinese computer engineer and science fiction writer. He is a nine-time winner of China's Galaxy Award and has also received the 2015 Hugo Award for his novel The Three-Body Problem as well as the 2017 Locus Award for Death's End. He is also a winner of the Chinese Nebula Award. In English translations of his works, his name is given as Cixin Liu. He is a member of China Science Writers Association and the vice president of Shanxi Writers Association. He is also called \"Da Liu\" (\"Big Liu\").",
     "widgetUrl": "/widgets/cixinWidget.png",
     "bannerUrl": "/banners/cixinBanner.png"
