@@ -1,6 +1,7 @@
 "use client";
 
-import "dotenv/config";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import "@fontsource/sora";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -12,7 +13,7 @@ import {
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { hardhat, polygonMumbai } from "wagmi/chains";
+import { hardhat, polygon, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
@@ -25,17 +26,24 @@ const theme = extendTheme({
   },
 });
 
+console.log(process.env.APP_STATE);
+
 const { chains, publicClient } = configureChains(
-  [hardhat, polygonMumbai],
-  [
-    publicProvider(),
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
-  ]
+  process.env.APP_STATE !== "production"
+    ? [hardhat, polygonMumbai]
+    : [polygonMumbai],
+  process.env.APP_STATE !== "production"
+    ? [publicProvider()]
+    : [
+        publicProvider(),
+        alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
+      ]
 );
 
+const WALLET_CONNECT_ID = "4a5edee207db822d4c4f5e8c64b8537c";
 const { connectors } = getDefaultWallets({
-  appName: "InkVaults Project",
-  projectId: "fd0396dd8112284099c7567219b60051",
+  appName: "InkVaults",
+  projectId: WALLET_CONNECT_ID,
   chains,
 });
 

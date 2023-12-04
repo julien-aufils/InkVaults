@@ -12,7 +12,7 @@ contract BookShareFactory is Ownable {
     event BookShareCreated(address indexed bookShareContract, address indexed author, uint256 rightsPercentage, uint256 totalShares, uint256 pricePerShare);
 
     // Mapping to track Book Shares created by each author
-    mapping(address => address[]) public booksharesByAuthor;
+    mapping(address => address[]) booksharesByAuthor;
          
     constructor() Ownable(msg.sender){}
 
@@ -42,5 +42,14 @@ contract BookShareFactory is Ownable {
 
         // Emit an event for the new BookShare creation
         emit BookShareCreated(address(newBookShare), _author, _rightsPercentage, _totalShares, _pricePerShare);
+    }
+
+    /**
+     * @dev Get all BookShares associated with a specific author.
+     * @param _author The address of the author.
+     * @return addresses An array of BookShare contract addresses.
+     */
+    function getBookSharesByAuthor(address _author) external view returns (address[] memory addresses) {
+        return booksharesByAuthor[_author];
     }
 }

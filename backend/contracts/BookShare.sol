@@ -63,20 +63,6 @@ contract BookShare is ERC721, Ownable {
     }
 
     /**
-     * @dev Function to get a token URI.
-     * @param _tokenId The ID of the token.
-     * @return A string representing the token URI.
-     */
-    function tokenURI(uint _tokenId) public view virtual override(ERC721) returns(string memory) {
-        // 0 => ipfs://CID/0.json
-        // 1 => ipfs://CID/1.json
-       _requireOwned(_tokenId);
-
-        // "ipfs://CID/" + _tokenId + ".json"
-        return bytes(bookShareData.baseURI).length > 0 ? string.concat(bookShareData.baseURI, _tokenId.toString(), ".json") : "";
-    }
-
-    /**
      * @dev Function to get the BookShare URI.
      * @return A string representing the BookShare URI.
      */
