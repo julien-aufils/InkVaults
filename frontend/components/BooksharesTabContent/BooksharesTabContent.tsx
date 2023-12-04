@@ -34,8 +34,6 @@ const BooksharesTabContent: FC<{
         functionName: "getBookSharesByAuthor",
         args: [authorAddr],
       });
-
-      console.log(booksharesAddr);
       return booksharesAddr;
     } catch (error) {
       console.log(error);

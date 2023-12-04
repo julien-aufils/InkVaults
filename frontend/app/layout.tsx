@@ -15,6 +15,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { hardhat, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { isProductionState } from "@/constants";
 
 import NavBar from "@/components/NavBar/NavBar";
 
@@ -26,11 +27,13 @@ const theme = extendTheme({
 });
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai],
-  [
-    publicProvider(),
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
-  ]
+  isProductionState ? [polygonMumbai] : [hardhat, polygonMumbai],
+  isProductionState
+    ? [
+        publicProvider(),
+        alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
+      ]
+    : [publicProvider()]
 );
 
 const WALLET_CONNECT_ID = "4a5edee207db822d4c4f5e8c64b8537c";
@@ -58,7 +61,7 @@ export default function RootLayout({
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider theme={darkTheme()} chains={chains}>
               <NavBar />
-              <Box as="main" backgroundColor="#080A0C" minHeight="100vh">
+              <Box as="main" backgroundColor="#080A0C">
                 <Flex
                   px={{ base: "1rem", md: "4rem" }}
                   py="1rem"
@@ -67,6 +70,7 @@ export default function RootLayout({
                   direction="column"
                   gap="2rem"
                   textColor="#FFF"
+                  minHeight={`calc(100vh - 5.5rem)`}
                 >
                   {children}
                 </Flex>

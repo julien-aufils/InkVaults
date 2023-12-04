@@ -13,6 +13,7 @@ import {
 import ProfileTabItem from "@/components/ProfileTabItem/ProfileTabItem";
 import BiographyTabContent from "@/components/BiographyTabContent/BiographyTabContent";
 import BooksharesTabContent from "@/components/BooksharesTabContent/BooksharesTabContent";
+import { isProductionState } from "@/constants";
 import authorsData from "/data/authors.json";
 import Author from "@/types/Author";
 
@@ -84,7 +85,11 @@ const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
               <TabPanel display="flex" px="0" py="1.5rem">
                 <BooksharesTabContent
                   authorId={selectedAuthor.id}
-                  authorAddr={selectedAuthor.mumbaiAddr}
+                  authorAddr={
+                    isProductionState
+                      ? selectedAuthor.mumbaiAddr
+                      : selectedAuthor.localAddr
+                  }
                   setTabIndex={setTabIndex}
                 />
               </TabPanel>
