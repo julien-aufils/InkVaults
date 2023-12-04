@@ -1,7 +1,6 @@
 "use client";
 
-import * as dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 import "@fontsource/sora";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -27,15 +26,11 @@ const theme = extendTheme({
 });
 
 const { chains, publicClient } = configureChains(
-  process.env.APP_STATE !== "production"
-    ? [hardhat, polygonMumbai]
-    : [polygonMumbai],
-  process.env.APP_STATE !== "production"
-    ? [publicProvider()]
-    : [
-        publicProvider(),
-        alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
-      ]
+  [polygonMumbai],
+  [
+    publicProvider(),
+    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
+  ]
 );
 
 const WALLET_CONNECT_ID = "4a5edee207db822d4c4f5e8c64b8537c";

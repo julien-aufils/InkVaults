@@ -1,6 +1,11 @@
 export const BOOKSHARE_FACTORY_CONTRACT_LOCAL =
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
+export const BOOKSHARE_FACTORY_CONTRACT_MUMBAI =
+  "0xd05471FF22226fff90f3b7149659630b36D54a4a";
+
+export const bookshareFactoryAddress = BOOKSHARE_FACTORY_CONTRACT_MUMBAI;
+
 export const abiBookshareFactory = [
   {
     inputs: [],

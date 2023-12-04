@@ -84,11 +84,7 @@ const AuthorProfile: FC<AuthorProfileProps> = ({ params }) => {
               <TabPanel display="flex" px="0" py="1.5rem">
                 <BooksharesTabContent
                   authorId={selectedAuthor.id}
-                  authorAddr={
-                    process.env.APP_STATE !== "production"
-                      ? selectedAuthor.localAddr
-                      : ""
-                  }
+                  authorAddr={selectedAuthor.mumbaiAddr}
                   setTabIndex={setTabIndex}
                 />
               </TabPanel>

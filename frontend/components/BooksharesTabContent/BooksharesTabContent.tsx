@@ -13,7 +13,7 @@ import BuyBookshareButton from "../UI/BuyBookshareButton";
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
 
 import {
-  BOOKSHARE_FACTORY_CONTRACT_LOCAL,
+  bookshareFactoryAddress,
   abiBookshareFactory,
   abiBookshare,
 } from "@/constants";
@@ -29,12 +29,13 @@ const BooksharesTabContent: FC<{
   const getBooksharesAddr = async () => {
     try {
       const booksharesAddr = await readContract({
-        address: BOOKSHARE_FACTORY_CONTRACT_LOCAL,
+        address: bookshareFactoryAddress,
         abi: abiBookshareFactory,
         functionName: "getBookSharesByAuthor",
         args: [authorAddr],
       });
 
+      console.log(booksharesAddr);
       return booksharesAddr;
     } catch (error) {
       console.log(error);
