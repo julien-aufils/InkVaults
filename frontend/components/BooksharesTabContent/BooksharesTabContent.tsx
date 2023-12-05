@@ -2,6 +2,7 @@ import { useState, useEffect, FC } from "react";
 import { Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
 import { readContract } from "wagmi/actions";
 import { fetchFromIPFS } from "@/utils/ipfs";
+import { formatEther } from "viem";
 import authorsData from "/data/authors.json";
 
 import Bookshare from "@/types/Bookshare";
@@ -24,6 +25,7 @@ const BooksharesTabContent: FC<{
   setTabIndex: Function;
 }> = ({ authorId, authorAddr, setTabIndex }) => {
   const [authorBookshares, setAuthorBookshares] = useState<Bookshare[]>([]);
+  const maticToUsdRate = 0.8;
 
   // Request to BookshareFactory contract : Get all the bookshares addresses of authorId
   const getBooksharesAddr = async () => {
@@ -109,6 +111,9 @@ const BooksharesTabContent: FC<{
     <Flex w="100%" direction="column" gap="2rem">
       {authorBookshares?.map((bookshare: Bookshare, index: number) => {
         const isSelected = selectedBookshare === index;
+        const booksharePrice =
+          parseFloat(formatEther(bookshare.price?.amount as any)) *
+          maticToUsdRate;
         return (
           <Flex
             backgroundColor="#111318"
@@ -137,6 +142,7 @@ const BooksharesTabContent: FC<{
                   <BookshareInfo
                     bookshare={bookshare}
                     isSelected={isSelected}
+                    booksharePrice={booksharePrice.toFixed(3) as any}
                   />
                 </Flex>
               </Flex>
@@ -162,7 +168,7 @@ const BooksharesTabContent: FC<{
                 <Flex direction="column" gap="1rem">
                   <BuyBookshareButton
                     onClick={onOpen}
-                    amount={bookshare.price?.amount}
+                    amount={booksharePrice.toFixed(3) as any}
                   />
                   <Link
                     fontSize="sm"

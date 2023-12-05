@@ -12,8 +12,8 @@ async function main() {
     "0xb0e9769001a3B7eA2440b492426484FD10B16183",
     1500,
     150,
-    15,
-    "ipfs://bafybeibs6tekw5gx7oppl4qf2nip6vkzs52ycis5ta6jlt3qckglekhvhu"
+    "1500000000000000",
+    "ipfs://bafybeieykkopgeymc2qrh6dc2dcqzfiojwomo55unwc2jzhzp6aq4rs3l4"
   );
 
   await bookshareFactory.createBookShare(
@@ -22,8 +22,8 @@ async function main() {
     "0xb0e9769001a3B7eA2440b492426484FD10B16183",
     2000,
     200,
-    20,
-    "ipfs://bafybeici4nshctl6ewtnvqmfxcqpaempzympujrcfsdvkp2z6e6zj4jmja"
+    "2000000000000000",
+    "ipfs://bafybeigcjqcvnv7muytgqunxaukqvu2skjkkc3a3gofv2evxbipurbcj7e"
   );
 
   await bookshareFactory.createBookShare(
@@ -32,8 +32,8 @@ async function main() {
     "0xb0e9769001a3B7eA2440b492426484FD10B16183",
     1000,
     100,
-    10,
-    "ipfs://bafybeihmpdmj46fvmkc3qb7xyhkikd7vzyx3elrp7p7pu4uhorasggyeym"
+    "1000000000000000",
+    "ipfs://bafybeiaej3c34f7ce6q2btdhb2vg65ykyyihgfnyp32nf4w7wuv3betwam"
   );
 
   await bookshareFactory.createBookShare(
@@ -42,8 +42,8 @@ async function main() {
     "0xfFA13a19DFdAaD83ecD0c089C0A05752984cD026",
     2500,
     50,
-    50,
-    "ipfs://bafybeia5r3357hq2ejhuocbmsz4cydrlddi5u7i6hdzollcr3glmfne5cm"
+    "5000000000000000",
+    "ipfs://bafybeiglcsfnsvrpaeei2lmvrxylf7zygjf2ihlfr47y2awhwlx4umhvda"
   );
 
   const booksharesAddr1 = await bookshareFactory.getBookSharesByAuthor(
