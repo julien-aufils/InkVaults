@@ -16,7 +16,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
+import { useAccount, useBalance } from "wagmi";
+import { formatEther } from "viem";
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
 import Bookshare from "@/types/Bookshare";
 import Author from "@/types/Author";
@@ -40,6 +42,43 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   selectedAuthor,
 }) => {
   const [booksharesNbToBuy, setBooksharesNbToBuy] = useState(1);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const maticToUsdRate = 0.8;
+  const [userBalanceInUsd, setUserBalanceInUsd] = useState<number | null>(null);
+
+  const booksharePrice: any =
+    selectedBookshare?.price?.amount != null
+      ? (
+          Number(formatEther(selectedBookshare.price.amount as any)) *
+          maticToUsdRate
+        ).toFixed(3)
+      : 0;
+
+  const { address, isConnected } = useAccount();
+
+  const { data, isError, isLoading } = useBalance({
+    address: address,
+  });
+
+  useEffect(() => {
+    if (data?.formatted) {
+      const balanceInUsd = parseFloat(
+        ((data.formatted as any) * maticToUsdRate).toFixed(3)
+      );
+      setUserBalanceInUsd(balanceInUsd);
+    }
+  }, [data, maticToUsdRate]);
+
+  useEffect(() => {
+    if (booksharePrice) {
+      const calculatedTotalAmount = booksharesNbToBuy * booksharePrice;
+      const roundedTotalAmount = parseFloat(calculatedTotalAmount.toFixed(3));
+      setTotalAmount(roundedTotalAmount);
+    }
+  }, [selectedBookshare, booksharesNbToBuy]);
+
+  const isBalanceOk =
+    userBalanceInUsd !== null && totalAmount < userBalanceInUsd ? true : false;
 
   const handleIncrement = () => {
     if (booksharesNbToBuy < 999) {
@@ -144,20 +183,32 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
               </Flex>
               <BookshareInfo
                 bookshare={selectedBookshare}
+                booksharePrice={booksharePrice}
                 isSelected={true}
                 customStyle={{ width: "80%" }}
               />
               <Box
                 border="1px"
-                borderColor="#1CAEBE"
+                borderColor={!isBalanceOk ? "red" : "#1CAEBE"}
                 borderRadius="0.75rem"
                 p="0.5rem"
                 display="flex"
                 gap="0.5rem"
                 alignSelf="stretch"
               >
-                <Text as="strong">Your wallet balance:</Text>
-                <Text>$456</Text>
+                <Text
+                  as="strong"
+                  color={isConnected && !isBalanceOk ? "red" : undefined}
+                >
+                  Your wallet balance:
+                </Text>
+                {isConnected ? (
+                  <Text
+                    color={isConnected && !isBalanceOk ? "red" : undefined}
+                  >{`$${userBalanceInUsd}`}</Text>
+                ) : (
+                  <Text>Connect your wallet.</Text>
+                )}
               </Box>
             </ModalBody>
             <ModalFooter
@@ -166,10 +217,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
               gap="1rem"
               p="1rem"
             >
-              <BuyBookshareButton
-                amount={selectedBookshare.price.amount}
-                onClick={undefined}
-              />
+              <BuyBookshareButton amount={totalAmount} onClick={undefined} />
               <Link
                 variant="link"
                 bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"

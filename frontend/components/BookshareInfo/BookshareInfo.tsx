@@ -1,16 +1,19 @@
 import React from "react";
 import { Collapse, Flex, List, ListItem, Text } from "@chakra-ui/react";
+import { formatEther } from "viem";
 import BookshareExtendedInfo from "../BookshareExtendedInfo/BookshareExtendedInfo";
 import Bookshare from "@/types/Bookshare";
 
 interface BookshareInfoProps {
   bookshare: Bookshare;
+  booksharePrice: Number;
   isSelected: boolean;
   customStyle?: React.CSSProperties | null;
 }
 
 const BookshareInfo: React.FC<BookshareInfoProps> = ({
   bookshare,
+  booksharePrice,
   isSelected,
   customStyle,
 }) => {
@@ -37,7 +40,7 @@ const BookshareInfo: React.FC<BookshareInfoProps> = ({
         <ListItem display="flex" justifyContent="space-between" fontSize="sm">
           <Text fontWeight="600">Price</Text>
           <Flex gap="0.2rem" align="center">
-            <Text fontWeight="600">${bookshare.price.amount}</Text>
+            <Text fontWeight="600">${booksharePrice as any}</Text>
             <Text fontSize="xs">for</Text>
             <Text fontSize="xs">{bookshare.price.percentage} %</Text>
           </Flex>
