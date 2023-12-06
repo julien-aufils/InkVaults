@@ -20,7 +20,11 @@ import { FC, useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { formatEther } from "viem";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { abiBookshare, MARKET_FEE_PERCENTAGE } from "@/constants";
+import {
+  abiBookshare,
+  MARKET_FEE_PERCENTAGE,
+  MATIC_TO_USD_RATE,
+} from "@/constants";
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
 import Bookshare from "@/types/Bookshare";
 import Author from "@/types/Author";
@@ -52,8 +56,10 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   const [marketFee, setMarketFee] = useState<bigint>(0n);
   const [totalAmount, setTotalAmount] = useState<bigint>(0n);
   const [formattedTotalAmount, setFormattedTotalAmount] = useState("");
+  const [totalAmountInUsd, setTotalAmountInUsd] = useState("");
   const [userBalance, setUserBalance] = useState(0n);
   const [userBalanceFormatted, setUserBalanceFormatted] = useState(0);
+  const [userBalanceInUsd, setUserBalanceInUsd] = useState("");
   const [isBalanceOk, setIsBalanceOk] = useState(false);
 
   type TransactionState = "idle" | "pending" | "success" | "error";
@@ -98,6 +104,12 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
         setFormattedTotalAmount(
           parseFloat(formatEther(totalCost)).toFixed(3) as any
         );
+        setTotalAmountInUsd(
+          (parseFloat(formatEther(totalCost)) * MATIC_TO_USD_RATE).toFixed(
+            3
+          ) as any
+        );
+        console.log(totalAmountInUsd);
         setMarketFee(marketFee);
 
         if (isConnected) {
@@ -130,6 +142,12 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
       setUserBalanceFormatted(
         parseFloat(data?.formatted || "0").toFixed(3) as any
       );
+      setUserBalanceInUsd(
+        (parseFloat(data?.formatted || "0") * MATIC_TO_USD_RATE).toFixed(
+          3
+        ) as any
+      );
+      console.log(userBalanceInUsd);
     }
   }, [data, isConnected]);
 
@@ -303,7 +321,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                         }
                       >
                         {userBalanceFormatted !== null
-                          ? `${userBalanceFormatted} MATIC`
+                          ? `$${userBalanceInUsd} (${userBalanceFormatted} MATIC)`
                           : "Loading..."}
                       </Text>
                     ) : (
@@ -318,7 +336,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                   p="1rem"
                 >
                   <BuyBookshareButton
-                    amount={formattedTotalAmount}
+                    amount={totalAmountInUsd}
                     onClick={buyBookshare}
                     isDisabled={!isBalanceOk || !isConnected}
                   />

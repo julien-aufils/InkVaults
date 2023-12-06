@@ -40,7 +40,7 @@ const BookshareInfo: React.FC<BookshareInfoProps> = ({
         <ListItem display="flex" justifyContent="space-between" fontSize="sm">
           <Text fontWeight="600">Price</Text>
           <Flex gap="0.2rem" align="center">
-            <Text fontWeight="600">{booksharePrice as any} MATIC</Text>
+            <Text fontWeight="600">${booksharePrice as any}</Text>
             <Text fontSize="xs">for</Text>
             <Text fontSize="xs">{bookshare.price.percentage} %</Text>
           </Flex>
