@@ -23,7 +23,7 @@ const BuyBookshareButton: React.FC<BuyBookshareButtonProps> = ({
       isDisabled={isDisabled}
       _hover={{ bgColor: "#fff", textColor: "#000" }}
     >
-      Buy for {amount} MATIC
+      Buy for ${amount}
     </Button>
   );
 };

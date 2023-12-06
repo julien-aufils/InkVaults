@@ -13,7 +13,7 @@ const BookshareExtendedInfo: FC<BookshareExtendedInfoProps> = ({
     <>
       <ListItem display="flex" justifyContent="space-between" fontSize="sm">
         <Text fontWeight="600">Release date</Text>
-        <Text>{bookshare.releaseDate} %</Text>
+        <Text>{bookshare.releaseDate}</Text>
       </ListItem>
       <ListItem display="flex" justifyContent="space-between" fontSize="sm">
         <Text fontWeight="600">Royalties</Text>
