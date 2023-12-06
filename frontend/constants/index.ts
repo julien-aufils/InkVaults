@@ -4,11 +4,14 @@ export const BOOKSHARE_FACTORY_CONTRACT_LOCAL =
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const BOOKSHARE_FACTORY_CONTRACT_MUMBAI =
-  "0x5a205FA62979c08e1f58316C0B8eD6F6B20094Da";
+  "0xa557F30d468ED50A4C44e0c3afa052DFbFeF6B57";
 
 export const bookshareFactoryAddress = isProductionState
   ? BOOKSHARE_FACTORY_CONTRACT_MUMBAI
   : BOOKSHARE_FACTORY_CONTRACT_LOCAL;
+
+export const MARKET_FEE_PERCENTAGE = 500n;
+export const MATIC_TO_USD_RATE = 0.8;
 
 export const abiBookshareFactory = [
   {
@@ -615,6 +618,30 @@ export const abiBookshare = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_quantity",
+        type: "uint256",
+      },
+    ],
+    name: "getTotalCost",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "totalCost",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "marketFee",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

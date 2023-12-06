@@ -19,12 +19,14 @@ import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { FC, useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { formatEther } from "viem";
+import { abiBookshare, MARKET_FEE_PERCENTAGE } from "@/constants";
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
 import Bookshare from "@/types/Bookshare";
 import Author from "@/types/Author";
 
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
 import BuyBookshareButton from "../UI/BuyBookshareButton";
+import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 interface ModalBuyBookshareProps {
   onOpen: () => void;
@@ -42,43 +44,90 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   selectedAuthor,
 }) => {
   const [booksharesNbToBuy, setBooksharesNbToBuy] = useState(1);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const maticToUsdRate = 0.8;
-  const [userBalanceInUsd, setUserBalanceInUsd] = useState<number | null>(null);
-
-  const booksharePrice: any =
-    selectedBookshare?.price?.amount != null
-      ? (
-          Number(formatEther(selectedBookshare.price.amount as any)) *
-          maticToUsdRate
-        ).toFixed(3)
-      : 0;
+  const [marketFee, setMarketFee] = useState<bigint>(0n);
+  const [totalAmount, setTotalAmount] = useState<bigint>(0n);
+  const [formattedTotalAmount, setFormattedTotalAmount] = useState("");
+  const [userBalance, setUserBalance] = useState(0n);
+  const [userBalanceFormatted, setUserBalanceFormatted] = useState(0);
+  const [isBalanceOk, setIsBalanceOk] = useState(false);
 
   const { address, isConnected } = useAccount();
 
-  const { data, isError, isLoading } = useBalance({
+  const { data } = useBalance({
     address: address,
+    watch: true,
   });
 
+  const calculateTransactionCosts = (
+    quantity: bigint,
+    pricePerShare: bigint,
+    marketFeePercentage: bigint
+  ) => {
+    const pricePerShareBigInt = BigInt(pricePerShare);
+    const marketFeePercentageBigInt = BigInt(marketFeePercentage);
+
+    const marketFee =
+      (BigInt(quantity) * pricePerShareBigInt * marketFeePercentageBigInt) /
+      10000n;
+    const totalCost = BigInt(quantity) * pricePerShareBigInt + marketFee;
+
+    return { totalCost, marketFee };
+  };
+
+  // ...
+
+  const fetchData = () => {
+    try {
+      if (selectedBookshare?.price?.amount) {
+        const priceAmountBigInt = BigInt(selectedBookshare.price.amount);
+        const { totalCost, marketFee } = calculateTransactionCosts(
+          BigInt(booksharesNbToBuy),
+          priceAmountBigInt,
+          MARKET_FEE_PERCENTAGE
+        );
+
+        setTotalAmount(totalCost);
+        setFormattedTotalAmount(
+          parseFloat(formatEther(totalCost)).toFixed(3) as any
+        );
+        setMarketFee(marketFee);
+
+        if (isConnected) {
+          // Assurez-vous que userBalance est défini avant de vérifier la balance
+          if (userBalance !== null) {
+            checkBalance(userBalance, totalCost);
+          } else {
+            console.log("User balance is not available.");
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    if (data?.formatted) {
-      const balanceInUsd = parseFloat(
-        ((data.formatted as any) * maticToUsdRate).toFixed(3)
+    fetchData();
+  }, [selectedBookshare, booksharesNbToBuy, isConnected, userBalance]);
+
+  useEffect(() => {
+    if (isConnected) {
+      if (data?.value !== undefined) {
+        setUserBalance(BigInt(data.value));
+      }
+      setUserBalanceFormatted(
+        parseFloat(data?.formatted || "0").toFixed(3) as any
       );
-      setUserBalanceInUsd(balanceInUsd);
     }
-  }, [data, maticToUsdRate]);
+  }, [data, isConnected]);
 
-  useEffect(() => {
-    if (booksharePrice) {
-      const calculatedTotalAmount = booksharesNbToBuy * booksharePrice;
-      const roundedTotalAmount = parseFloat(calculatedTotalAmount.toFixed(3));
-      setTotalAmount(roundedTotalAmount);
+  const checkBalance = (userBalance: bigint, totalAmount: bigint) => {
+    if (userBalance !== null && totalAmount < userBalance) {
+      setIsBalanceOk(true);
+    } else {
+      setIsBalanceOk(false);
     }
-  }, [selectedBookshare, booksharesNbToBuy]);
-
-  const isBalanceOk =
-    userBalanceInUsd !== null && totalAmount < userBalanceInUsd ? true : false;
+  };
 
   const handleIncrement = () => {
     if (booksharesNbToBuy < 999) {
@@ -95,6 +144,24 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   const handleInputChange = (value: number) => {
     if (value >= 0 && value < 999) {
       setBooksharesNbToBuy(value);
+    }
+  };
+
+  const buyBookshare = async () => {
+    try {
+      console.log("Buy Bookshare button clicked");
+
+      const { request } = await prepareWriteContract({
+        // @ts-ignore
+        address: selectedBookshare?.bookshareAddr,
+        abi: abiBookshare,
+        functionName: "buyShares",
+        value: totalAmount,
+        args: [booksharesNbToBuy],
+      });
+      const { hash } = await writeContract(request);
+    } catch (err: any) {
+      console.log(err.message);
     }
   };
 
@@ -183,7 +250,9 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
               </Flex>
               <BookshareInfo
                 bookshare={selectedBookshare}
-                booksharePrice={booksharePrice}
+                booksharePrice={parseFloat(
+                  formatEther(selectedBookshare.price?.amount as any)
+                )}
                 isSelected={true}
                 customStyle={{ width: "80%" }}
               />
@@ -203,11 +272,13 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                   Your wallet balance:
                 </Text>
                 {isConnected ? (
-                  <Text
-                    color={isConnected && !isBalanceOk ? "red" : undefined}
-                  >{`$${userBalanceInUsd}`}</Text>
+                  <Text color={isConnected && !isBalanceOk ? "red" : undefined}>
+                    {userBalanceFormatted !== null
+                      ? `${userBalanceFormatted} MATIC`
+                      : "Loading..."}
+                  </Text>
                 ) : (
-                  <Text>Connect your wallet.</Text>
+                  <Link>Please connect your wallet.</Link>
                 )}
               </Box>
             </ModalBody>
@@ -217,7 +288,11 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
               gap="1rem"
               p="1rem"
             >
-              <BuyBookshareButton amount={totalAmount} onClick={undefined} />
+              <BuyBookshareButton
+                amount={formattedTotalAmount}
+                onClick={buyBookshare}
+                isDisabled={!isBalanceOk || !isConnected}
+              />
               <Link
                 variant="link"
                 bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"

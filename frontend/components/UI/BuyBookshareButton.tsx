@@ -2,13 +2,15 @@ import { Button } from "@chakra-ui/react";
 import React from "react";
 
 interface BuyBookshareButtonProps {
-  onClick?: () => void | undefined;
-  amount: number;
+  onClick?: () => Promise<void> | void;
+  amount: string;
+  isDisabled: boolean | undefined;
 }
 
 const BuyBookshareButton: React.FC<BuyBookshareButtonProps> = ({
   onClick,
   amount,
+  isDisabled,
 }) => {
   return (
     <Button
@@ -18,9 +20,10 @@ const BuyBookshareButton: React.FC<BuyBookshareButtonProps> = ({
       h="3.5rem"
       borderRadius="3rem"
       onClick={onClick}
+      isDisabled={isDisabled}
       _hover={{ bgColor: "#fff", textColor: "#000" }}
     >
-      Buy ${amount}
+      Buy for {amount} MATIC
     </Button>
   );
 };
