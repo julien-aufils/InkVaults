@@ -15,10 +15,11 @@ import {
   ModalHeader,
   Text,
 } from "@chakra-ui/react";
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
+import { AddIcon, MinusIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { FC, useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { formatEther } from "viem";
+import { Player } from "@lottiefiles/react-lottie-player";
 import { abiBookshare, MARKET_FEE_PERCENTAGE } from "@/constants";
 import BookshareInfo from "../BookshareInfo/BookshareInfo";
 import Bookshare from "@/types/Bookshare";
@@ -26,7 +27,11 @@ import Author from "@/types/Author";
 
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
 import BuyBookshareButton from "../UI/BuyBookshareButton";
-import { prepareWriteContract, writeContract } from "wagmi/actions";
+import {
+  prepareWriteContract,
+  waitForTransaction,
+  writeContract,
+} from "wagmi/actions";
 
 interface ModalBuyBookshareProps {
   onOpen: () => void;
@@ -51,6 +56,11 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   const [userBalanceFormatted, setUserBalanceFormatted] = useState(0);
   const [isBalanceOk, setIsBalanceOk] = useState(false);
 
+  type TransactionState = "idle" | "pending" | "success" | "error";
+  const [transactionState, setTransactionState] =
+    useState<TransactionState>("idle");
+  const [transactionHash, setTransactionHash] = useState("");
+
   const { address, isConnected } = useAccount();
 
   const { data } = useBalance({
@@ -74,8 +84,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
     return { totalCost, marketFee };
   };
 
-  // ...
-
   const fetchData = () => {
     try {
       if (selectedBookshare?.price?.amount) {
@@ -93,7 +101,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
         setMarketFee(marketFee);
 
         if (isConnected) {
-          // Assurez-vous que userBalance est défini avant de vérifier la balance
           if (userBalance !== null) {
             checkBalance(userBalance, totalCost);
           } else {
@@ -104,6 +111,11 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const resetTransactionState = () => {
+    setTransactionState("idle");
+    setTransactionHash("");
   };
 
   useEffect(() => {
@@ -120,6 +132,12 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
       );
     }
   }, [data, isConnected]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetTransactionState();
+    }
+  }, [isOpen]);
 
   const checkBalance = (userBalance: bigint, totalAmount: bigint) => {
     if (userBalance !== null && totalAmount < userBalance) {
@@ -149,8 +167,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
 
   const buyBookshare = async () => {
     try {
-      console.log("Buy Bookshare button clicked");
-
       const { request } = await prepareWriteContract({
         // @ts-ignore
         address: selectedBookshare?.bookshareAddr,
@@ -160,7 +176,12 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
         args: [booksharesNbToBuy],
       });
       const { hash } = await writeContract(request);
+      setTransactionState("pending");
+      setTransactionHash(hash);
+      await waitForTransaction({ hash: hash });
+      setTransactionState("success");
     } catch (err: any) {
+      setTransactionState("error");
       console.log(err.message);
     }
   };
@@ -168,6 +189,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="3xl" isCentered>
       <ModalOverlay />
+
       <ModalContent
         backgroundColor="#191D24"
         textColor="#FFF"
@@ -197,113 +219,236 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                 </Heading>
               </Flex>
             </ModalHeader>
-            <ModalBody
-              p="0 1rem"
-              display="flex"
-              flexDirection="column"
-              gap="2rem"
-              alignItems="center"
-            >
-              <Text fontSize="sm">
-                Become a partner, by owning a Book Share and its proportional
-                share of rights, <strong>earn royalties</strong> based on the
-                commercial performance.
-              </Text>
-              <Flex justify="center" gap="4rem">
-                <PercentBookshareInfo
-                  percentage={selectedBookshare.price.percentage}
-                />
-                <Flex align="center" gap="1rem">
-                  <IconButton
-                    aria-label="Search database"
-                    icon={<MinusIcon />}
-                    color="#fff"
-                    bgColor="#1CAEBE66"
-                    isRound={true}
-                    size="xs"
-                    onClick={handleDecrement}
-                  />
-
-                  <Input
-                    variant="unstyled"
-                    type="number"
-                    min="1"
-                    value={booksharesNbToBuy}
-                    onChange={(e) =>
-                      handleInputChange(parseInt(e.target.value, 10))
-                    }
-                    fontWeight="700"
-                    fontSize="3xl"
-                    w="3.8rem"
-                    textAlign="center"
-                  />
-                  <IconButton
-                    aria-label="Search database"
-                    icon={<AddIcon />}
-                    color="#fff"
-                    bgColor="#1CAEBE66"
-                    isRound={true}
-                    size="xs"
-                    onClick={handleIncrement}
-                  />
-                </Flex>
-              </Flex>
-              <BookshareInfo
-                bookshare={selectedBookshare}
-                booksharePrice={parseFloat(
-                  formatEther(selectedBookshare.price?.amount as any)
-                )}
-                isSelected={true}
-                customStyle={{ width: "80%" }}
-              />
-              <Box
-                border="1px"
-                borderColor={!isBalanceOk ? "red" : "#1CAEBE"}
-                borderRadius="0.75rem"
-                p="0.5rem"
-                display="flex"
-                gap="0.5rem"
-                alignSelf="stretch"
-              >
-                <Text
-                  as="strong"
-                  color={isConnected && !isBalanceOk ? "red" : undefined}
+            {transactionState === "idle" && (
+              <>
+                <ModalBody
+                  p="0 1rem"
+                  display="flex"
+                  flexDirection="column"
+                  gap="2rem"
+                  alignItems="center"
                 >
-                  Your wallet balance:
-                </Text>
-                {isConnected ? (
-                  <Text color={isConnected && !isBalanceOk ? "red" : undefined}>
-                    {userBalanceFormatted !== null
-                      ? `${userBalanceFormatted} MATIC`
-                      : "Loading..."}
+                  <Text fontSize="sm">
+                    Become a partner, by owning a Book Share and its
+                    proportional share of rights,{" "}
+                    <strong>earn royalties</strong> based on the commercial
+                    performance.
                   </Text>
-                ) : (
-                  <Link>Please connect your wallet.</Link>
-                )}
-              </Box>
-            </ModalBody>
-            <ModalFooter
-              display="flex"
-              flexDirection="column"
-              gap="1rem"
-              p="1rem"
-            >
-              <BuyBookshareButton
-                amount={formattedTotalAmount}
-                onClick={buyBookshare}
-                isDisabled={!isBalanceOk || !isConnected}
-              />
-              <Link
-                variant="link"
-                bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
-                bgClip="text"
-                _hover={{ textColor: "#fff", textDecoration: "underline" }}
-                mr={3}
-                onClick={onClose}
-              >
-                Close
-              </Link>
-            </ModalFooter>
+                  <Flex justify="center" gap="4rem">
+                    <PercentBookshareInfo
+                      percentage={selectedBookshare.price.percentage}
+                    />
+                    <Flex align="center" gap="1rem">
+                      <IconButton
+                        aria-label="Search database"
+                        icon={<MinusIcon />}
+                        color="#fff"
+                        bgColor="#1CAEBE66"
+                        isRound={true}
+                        size="xs"
+                        onClick={handleDecrement}
+                      />
+
+                      <Input
+                        variant="unstyled"
+                        type="number"
+                        min="1"
+                        value={booksharesNbToBuy}
+                        onChange={(e) =>
+                          handleInputChange(parseInt(e.target.value, 10))
+                        }
+                        fontWeight="700"
+                        fontSize="3xl"
+                        w="3.8rem"
+                        textAlign="center"
+                      />
+                      <IconButton
+                        aria-label="Search database"
+                        icon={<AddIcon />}
+                        color="#fff"
+                        bgColor="#1CAEBE66"
+                        isRound={true}
+                        size="xs"
+                        onClick={handleIncrement}
+                      />
+                    </Flex>
+                  </Flex>
+                  <BookshareInfo
+                    bookshare={selectedBookshare}
+                    booksharePrice={parseFloat(
+                      formatEther(selectedBookshare.price?.amount as any)
+                    )}
+                    isSelected={true}
+                    customStyle={{ width: "80%" }}
+                  />
+                  <Box
+                    border="1px"
+                    borderColor={!isBalanceOk ? "#FF7063" : "#1CAEBE"}
+                    borderRadius="0.75rem"
+                    p="0.5rem"
+                    display="flex"
+                    gap="0.5rem"
+                    alignSelf="stretch"
+                  >
+                    <Text
+                      as="strong"
+                      color={isConnected && !isBalanceOk ? "red" : undefined}
+                    >
+                      Your wallet balance:
+                    </Text>
+                    {isConnected ? (
+                      <Text
+                        color={
+                          isConnected && !isBalanceOk ? "#FF7063" : undefined
+                        }
+                      >
+                        {userBalanceFormatted !== null
+                          ? `${userBalanceFormatted} MATIC`
+                          : "Loading..."}
+                      </Text>
+                    ) : (
+                      <Link>Please connect your wallet.</Link>
+                    )}
+                  </Box>
+                </ModalBody>
+                <ModalFooter
+                  display="flex"
+                  flexDirection="column"
+                  gap="1rem"
+                  p="1rem"
+                >
+                  <BuyBookshareButton
+                    amount={formattedTotalAmount}
+                    onClick={buyBookshare}
+                    isDisabled={!isBalanceOk || !isConnected}
+                  />
+                  <Link
+                    variant="link"
+                    bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
+                    bgClip="text"
+                    _hover={{ textColor: "#fff", textDecoration: "underline" }}
+                    mr={3}
+                    onClick={onClose}
+                  >
+                    Close
+                  </Link>
+                </ModalFooter>
+              </>
+            )}
+            {transactionState === "pending" && (
+              <>
+                <ModalBody
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                >
+                  <Player
+                    src="/transactionPending.json"
+                    className="player"
+                    loop
+                    autoplay
+                    style={{ width: "15rem" }}
+                  />
+                  <Heading textColor="#1CAEBE" fontWeight="700">
+                    Transaction pending
+                  </Heading>
+                  <Link
+                    href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+                    textColor="#C4C4C4"
+                    textDecoration="underline"
+                    _hover={{ textColor: "#fff" }}
+                    isExternal
+                  >
+                    View on explorer <ExternalLinkIcon mx="1px" />
+                  </Link>
+                </ModalBody>
+                <ModalFooter display="flex" justifyContent="center">
+                  <Link
+                    variant="link"
+                    bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
+                    bgClip="text"
+                    _hover={{ textColor: "#fff", textDecoration: "underline" }}
+                    mr={3}
+                    onClick={onClose}
+                  >
+                    Close
+                  </Link>
+                </ModalFooter>
+              </>
+            )}
+            {transactionState === "success" && (
+              <>
+                <ModalBody
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                >
+                  <Player
+                    src="/transactionSuccess.json"
+                    className="player"
+                    loop
+                    autoplay
+                    style={{ width: "15rem" }}
+                  />
+                  <Heading textColor="#1CAEBE" fontWeight="700">
+                    Transaction success
+                  </Heading>
+                  <Link
+                    href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+                    textColor="#C4C4C4"
+                    textDecoration="underline"
+                    _hover={{ textColor: "#fff" }}
+                    isExternal
+                  >
+                    View on explorer <ExternalLinkIcon mx="1px" />
+                  </Link>
+                </ModalBody>
+                <ModalFooter display="flex" justifyContent="center">
+                  <Link
+                    variant="link"
+                    bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
+                    bgClip="text"
+                    _hover={{ textColor: "#fff", textDecoration: "underline" }}
+                    mr={3}
+                    onClick={onClose}
+                  >
+                    Close
+                  </Link>
+                </ModalFooter>
+              </>
+            )}
+            {transactionState === "error" && (
+              <>
+                <ModalBody
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                >
+                  <Player
+                    src="/transactionError.json"
+                    className="player"
+                    loop
+                    autoplay
+                    style={{ width: "15rem" }}
+                  />
+                  <Heading textColor="#FF7063" fontWeight="700">
+                    Transaction error
+                  </Heading>
+                </ModalBody>
+                <ModalFooter display="flex" justifyContent="center">
+                  <Link
+                    variant="link"
+                    bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
+                    bgClip="text"
+                    _hover={{ textColor: "#fff", textDecoration: "underline" }}
+                    mr={3}
+                    onClick={onClose}
+                  >
+                    Close
+                  </Link>
+                </ModalFooter>
+              </>
+            )}
           </>
         )}
       </ModalContent>
