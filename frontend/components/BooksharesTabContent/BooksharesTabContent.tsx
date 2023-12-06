@@ -58,12 +58,19 @@ const BooksharesTabContent: FC<{
   };
 
   // Request to IPFS : Get Metadata and image of the bookshares
-  const getMetadataForBookshares = async (bookshareURIs: string[]) => {
+  const getMetadataForBookshares = async (
+    bookshareURIs: string[],
+    booksharesAddr: string[]
+  ) => {
     try {
       const bookshares = await Promise.all(
-        bookshareURIs.map(async (uri) => {
+        bookshareURIs.map(async (uri, index) => {
           const { metadata, imageBookshare } = await fetchFromIPFS(uri);
-          return { ...metadata, imageBookshare };
+          return {
+            ...metadata,
+            imageBookshare,
+            bookshareAddr: booksharesAddr[index],
+          };
         })
       );
       return bookshares;
@@ -83,7 +90,10 @@ const BooksharesTabContent: FC<{
           })
         );
 
-        const bookshares = await getMetadataForBookshares(bookshareURIs);
+        const bookshares = await getMetadataForBookshares(
+          bookshareURIs,
+          booksharesAddr
+        );
         setAuthorBookshares(bookshares);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -111,9 +121,9 @@ const BooksharesTabContent: FC<{
     <Flex w="100%" direction="column" gap="2rem">
       {authorBookshares?.map((bookshare: Bookshare, index: number) => {
         const isSelected = selectedBookshare === index;
-        const booksharePrice =
-          parseFloat(formatEther(bookshare.price?.amount as any)) *
-          maticToUsdRate;
+        const booksharePrice = parseFloat(
+          formatEther(bookshare.price?.amount as any)
+        );
         return (
           <Flex
             backgroundColor="#111318"

@@ -52,4 +52,6 @@ contract BookShareFactory is Ownable {
     function getBookSharesByAuthor(address _author) external view returns (address[] memory addresses) {
         return booksharesByAuthor[_author];
     }
+
+    
 }

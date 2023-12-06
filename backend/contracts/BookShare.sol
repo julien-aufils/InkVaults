@@ -60,6 +60,7 @@ contract BookShare is ERC721, Ownable {
         marketFeePercentage: 500, // Platform fee percentage for primary and secondary market
         distributionFeePercentage: 300 // Platform fee percentage for royalty distribution
     });
+        platformAddr = 0x59992191401fb871B512d23546FB0Fe52e2DaB7a;
     }
 
     /**
@@ -70,6 +71,17 @@ contract BookShare is ERC721, Ownable {
         return bookShareData.baseURI;
     }
 
+    /**
+     * 
+     * @param _quantity The quantity of Bookshares to buy
+     * @return totalCost The total cost of the Book Shares, including market fees.
+     * @return marketFee The market fee associated with the purchase.
+     */
+    function getTotalCost(uint256 _quantity) public view returns(uint256 totalCost, uint256 marketFee) {
+        marketFee = (_quantity * bookShareData.pricePerShare * bookShareData.marketFeePercentage) / 10000;
+        totalCost = (_quantity * bookShareData.pricePerShare) + marketFee;
+      }
+
 
     /**
      * @dev Function to buy Book Shares.
@@ -79,27 +91,28 @@ contract BookShare is ERC721, Ownable {
         require(_quantity > 0, "Quantity must be greater than 0");
         require(bookShareData.sharesAvailable >= _quantity, "Not enough Book Shares available");
 
-        // Calculate total cost with market fees
-        uint256 marketFee = (_quantity * bookShareData.pricePerShare * bookShareData.marketFeePercentage) / 10000;
-        uint256 totalCost = (_quantity * bookShareData.pricePerShare) + marketFee;
+        // Calculate total cost and market fee
+        (uint256 totalCost, uint256 marketFee) = getTotalCost(_quantity);
         require(msg.value >= totalCost, "Insufficient funds");
 
         // Transfer market fees to platform address
-        (bool success,) = platformAddr.call{value: marketFee}("");
-        require(success, "Failed to transfer fee");
+        (bool successFee,) = platformAddr.call{value: marketFee}("");
+        require(successFee, "Failed to transfer fee");
+
+        // Transfer funds to the author
+        uint256 remainingCost = totalCost - marketFee;
+        (bool successBuy,) = bookShareData.authorAddr.call{value: remainingCost}("");
+        require(successBuy, "Failed to transfer funds to author");
 
         // Mint new Book Shares to the buyer
         for (uint256 i = 1; i <= _quantity; i++) {
             --bookShareData.sharesAvailable;
-
-            (bool successBuy,) = bookShareData.authorAddr.call{value: _quantity * bookShareData.pricePerShare}("");
-            require(successBuy, "Failed to transfer fee");
             _safeMint(msg.sender, tokenIds);
             ++tokenIds;
         }
-
+        
         // Emit an event for the Book Shares being sold
-        emit BookShareSold(msg.sender, _quantity);
+        emit BookShareSold(msg.sender, totalCost);
     }
 
     /**
