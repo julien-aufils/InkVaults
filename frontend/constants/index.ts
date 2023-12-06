@@ -10,7 +10,7 @@ export const bookshareFactoryAddress = isProductionState
   ? BOOKSHARE_FACTORY_CONTRACT_MUMBAI
   : BOOKSHARE_FACTORY_CONTRACT_LOCAL;
 
-export const MARKET_FEE_PERCENTAGE = 500;
+export const MARKET_FEE_PERCENTAGE = 500n;
 export const MATIC_TO_USD_RATE = 0.8;
 
 export const abiBookshareFactory = [

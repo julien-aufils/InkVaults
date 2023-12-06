@@ -2,8 +2,8 @@ import { Button } from "@chakra-ui/react";
 import React from "react";
 
 interface BuyBookshareButtonProps {
-  onClick?: () => void | undefined;
-  amount: number;
+  onClick?: () => Promise<void> | void;
+  amount: string;
   isDisabled: boolean | undefined;
 }
 

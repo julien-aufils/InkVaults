@@ -179,6 +179,7 @@ const BooksharesTabContent: FC<{
                   <BuyBookshareButton
                     onClick={onOpen}
                     amount={booksharePrice.toFixed(3) as any}
+                    isDisabled={false}
                   />
                   <Link
                     fontSize="sm"

@@ -44,10 +44,10 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   selectedAuthor,
 }) => {
   const [booksharesNbToBuy, setBooksharesNbToBuy] = useState(1);
-  const [marketFee, setMarketFee] = useState(0n);
-  const [totalAmount, setTotalAmount] = useState(0n);
-  const [formattedTotalAmount, setFormattedTotalAmount] = useState(0);
-  const [userBalance, setUserBalance] = useState(0);
+  const [marketFee, setMarketFee] = useState<bigint>(0n);
+  const [totalAmount, setTotalAmount] = useState<bigint>(0n);
+  const [formattedTotalAmount, setFormattedTotalAmount] = useState("");
+  const [userBalance, setUserBalance] = useState(0n);
   const [userBalanceFormatted, setUserBalanceFormatted] = useState(0);
   const [isBalanceOk, setIsBalanceOk] = useState(false);
 
@@ -59,9 +59,9 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
   });
 
   const calculateTransactionCosts = (
-    quantity,
-    pricePerShare,
-    marketFeePercentage
+    quantity: bigint,
+    pricePerShare: bigint,
+    marketFeePercentage: bigint
   ) => {
     const pricePerShareBigInt = BigInt(pricePerShare);
     const marketFeePercentageBigInt = BigInt(marketFeePercentage);
@@ -87,7 +87,9 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
         );
 
         setTotalAmount(totalCost);
-        setFormattedTotalAmount(parseFloat(formatEther(totalCost)).toFixed(3));
+        setFormattedTotalAmount(
+          parseFloat(formatEther(totalCost)).toFixed(3) as any
+        );
         setMarketFee(marketFee);
 
         if (isConnected) {
@@ -110,12 +112,16 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
 
   useEffect(() => {
     if (isConnected) {
-      setUserBalance(data?.value);
-      setUserBalanceFormatted(parseFloat(data?.formatted).toFixed(3));
+      if (data?.value !== undefined) {
+        setUserBalance(BigInt(data.value));
+      }
+      setUserBalanceFormatted(
+        parseFloat(data?.formatted || "0").toFixed(3) as any
+      );
     }
   }, [data, isConnected]);
 
-  const checkBalance = (userBalance, totalAmount) => {
+  const checkBalance = (userBalance: bigint, totalAmount: bigint) => {
     if (userBalance !== null && totalAmount < userBalance) {
       setIsBalanceOk(true);
     } else {
@@ -146,6 +152,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
       console.log("Buy Bookshare button clicked");
 
       const { request } = await prepareWriteContract({
+        // @ts-ignore
         address: selectedBookshare?.bookshareAddr,
         abi: abiBookshare,
         functionName: "buyShares",
