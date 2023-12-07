@@ -16,10 +16,10 @@ const UserBooksharePayOut: React.FC<UserBooksharePayOutProps> = ({
   // const getTransactionsEvents = async () => {
   //   try {
   //     const events = await client.getLogs({
-  //        address: bookshare.bookshareAddr,
-  //        event: parseAbiItem(
-  //          "event BookShareSold(address indexed buyer, uint256 amount)"
-  //        ),
+  //       // address: bookshare.bookshareAddr,
+  //       // event: parseAbiItem(
+  //       //   "event BookShareSold(address indexed buyer, uint256 amount)"
+  //       // ),
   //     });
   //     return events;
   //   } catch (error) {
@@ -30,6 +30,7 @@ const UserBooksharePayOut: React.FC<UserBooksharePayOutProps> = ({
   // useEffect(() => {
   //   const fetchData = async () => {
   //     const transactionsEvents = await getTransactionsEvents();
+  //     console.log(transactionsEvents);
   //   };
   //   fetchData();
   // }, []);

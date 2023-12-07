@@ -8,8 +8,6 @@ import {
   abiBookshareFactory,
   bookshareFactoryAddress,
 } from "@/constants";
-import authorsData from "/data/authors.json";
-import Author from "@/types/Author";
 import Bookshare from "@/types/Bookshare";
 
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
@@ -21,10 +19,6 @@ const UserBooksharesTab = () => {
     null
   );
   const { address, isConnected } = useAccount();
-
-  const authorsAddresses = authorsData
-    .map((author: Author) => author.localAddr)
-    .filter((addr: string) => addr);
 
   const getBooksharesAddr = async () => {
     try {

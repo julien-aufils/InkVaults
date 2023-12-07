@@ -4,7 +4,7 @@ export const BOOKSHARE_FACTORY_CONTRACT_LOCAL =
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const BOOKSHARE_FACTORY_CONTRACT_MUMBAI =
-  "0xc2114E47324BF1f42117C32915D8B46853dD7B30";
+  "0xa77eBfcB8fba9cf72282Cd3a670012B8e11fb684";
 
 export const bookshareFactoryAddress = isProductionState
   ? BOOKSHARE_FACTORY_CONTRACT_MUMBAI
@@ -244,6 +244,11 @@ export const abiBookshare = [
         internalType: "string",
         name: "_baseURI",
         type: "string",
+      },
+      {
+        internalType: "address",
+        name: "_platformAddr",
+        type: "address",
       },
     ],
     stateMutability: "nonpayable",
