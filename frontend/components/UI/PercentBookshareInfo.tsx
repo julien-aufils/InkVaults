@@ -20,7 +20,7 @@ const PercentBookshareInfo: React.FC<PercentBookshareInfoProps> = ({
         fontWeight="700"
       >
         <Text fontSize="3xl" lineHeight="2rem">
-          {nbOfShares ? percentage * nbOfShares : percentage} %
+          {nbOfShares ? (percentage * nbOfShares).toFixed(1) : percentage} %
         </Text>
         <Text fontSize="xs">{nbOfShares ? "of shares" : "per shares"}</Text>
       </Flex>
