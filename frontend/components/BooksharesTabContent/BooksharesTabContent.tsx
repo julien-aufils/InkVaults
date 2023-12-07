@@ -164,7 +164,10 @@ const BooksharesTabContent: FC<{
               gap={selectedBookshare !== index ? "3rem" : "5rem"}
               align="flex-end"
             >
-              <PercentBookshareInfo percentage={bookshare.price?.percentage} />
+              <PercentBookshareInfo
+                percentage={bookshare.price?.percentage}
+                nbOfShares={undefined}
+              />
 
               {!isSelected ? (
                 <Link

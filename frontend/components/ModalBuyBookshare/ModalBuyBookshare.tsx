@@ -109,7 +109,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
             3
           ) as any
         );
-        console.log(totalAmountInUsd);
         setMarketFee(marketFee);
 
         if (isConnected) {
@@ -147,7 +146,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
           3
         ) as any
       );
-      console.log(userBalanceInUsd);
     }
   }, [data, isConnected]);
 

@@ -13,6 +13,7 @@ import Author from "@/types/Author";
 import Bookshare from "@/types/Bookshare";
 
 import PercentBookshareInfo from "../UI/PercentBookshareInfo";
+import UserBookshareInfo from "../UserBookshareInfo/UserBookshareInfo";
 
 const UserBooksharesTab = () => {
   const [userBookshares, setUserBookshares] = useState<Bookshare[]>([]);
@@ -158,7 +159,12 @@ const UserBooksharesTab = () => {
                 <Text fontSize="m" fontWeight="600">
                   {bookshare.title}
                 </Text>
-                <Flex direction="column" gap="0.6rem"></Flex>
+                <Flex direction="column" gap="0.6rem">
+                  <UserBookshareInfo
+                    bookshare={bookshare}
+                    isSelected={isSelected}
+                  />
+                </Flex>
               </Flex>
             </Flex>
             <Flex
