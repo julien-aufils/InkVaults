@@ -2,10 +2,12 @@ import { Flex, Image, Text } from "@chakra-ui/react";
 
 interface PercentBookshareInfoProps {
   percentage: number;
+  nbOfShares: number | undefined;
 }
 
 const PercentBookshareInfo: React.FC<PercentBookshareInfoProps> = ({
   percentage,
+  nbOfShares,
 }) => {
   return (
     <Flex gap="1rem">
@@ -18,9 +20,9 @@ const PercentBookshareInfo: React.FC<PercentBookshareInfoProps> = ({
         fontWeight="700"
       >
         <Text fontSize="3xl" lineHeight="2rem">
-          {percentage} %
+          {nbOfShares ? percentage * nbOfShares : percentage} %
         </Text>
-        <Text fontSize="xs">per shares</Text>
+        <Text fontSize="xs">{nbOfShares ? "of shares" : "per shares"}</Text>
       </Flex>
     </Flex>
   );

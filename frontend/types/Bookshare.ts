@@ -3,6 +3,7 @@ interface Bookshare {
   authorId: number;
   bookshareAddr: string;
   imageBookshare: Blob;
+  nbOfShares: number | undefined;
   totalSharedPercentage: number;
   supply: {
     available: number;
