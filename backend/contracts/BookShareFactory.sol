@@ -11,6 +11,9 @@ import './BookShare.sol';
 contract BookShareFactory is Ownable {
     event BookShareCreated(address indexed bookShareContract, address indexed author, uint256 rightsPercentage, uint256 totalShares, uint256 pricePerShare);
 
+    // Array to track all BookShares created
+    address[] booksharesCreated;
+
     // Mapping to track Book Shares created by each author
     mapping(address => address[]) booksharesByAuthor;
          
@@ -37,11 +40,22 @@ contract BookShareFactory is Ownable {
         // Deploy the BookShare contract
         BookShare newBookShare = new BookShare(_name, _symbol, _author, _rightsPercentage, _totalShares, _pricePerShare, _baseURI);
 
+        // Track the global list of all BookShares
+        booksharesCreated.push(address(newBookShare));
+
         // Track the Book Share created by the author
         booksharesByAuthor[_author].push(address(newBookShare));
 
         // Emit an event for the new BookShare creation
         emit BookShareCreated(address(newBookShare), _author, _rightsPercentage, _totalShares, _pricePerShare);
+    }
+
+    /**
+     * @dev Get all BookShares created.
+     * @return addresses An array of all BookShare contract addresses.
+     */
+    function getAllBookShares() external view returns (address[] memory) {
+        return booksharesCreated;
     }
 
     /**
@@ -52,6 +66,8 @@ contract BookShareFactory is Ownable {
     function getBookSharesByAuthor(address _author) external view returns (address[] memory addresses) {
         return booksharesByAuthor[_author];
     }
+
+
 
     
 }

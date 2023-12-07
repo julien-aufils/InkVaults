@@ -109,7 +109,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
             3
           ) as any
         );
-        console.log(totalAmountInUsd);
         setMarketFee(marketFee);
 
         if (isConnected) {
@@ -147,7 +146,6 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
           3
         ) as any
       );
-      console.log(userBalanceInUsd);
     }
   }, [data, isConnected]);
 
@@ -255,6 +253,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                   <Flex justify="center" gap="4rem">
                     <PercentBookshareInfo
                       percentage={selectedBookshare.price.percentage}
+                      nbOfShares={undefined}
                     />
                     <Flex align="center" gap="1rem">
                       <IconButton

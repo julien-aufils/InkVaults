@@ -18,6 +18,14 @@ export default function Home() {
           Page d'auteur : {author.name}
         </Link>
       ))}
+      <Link
+        as={NextLink}
+        href="/users/dashboard"
+        textDecoration="underline"
+        _hover={{ textColor: "#3D6EFF" }}
+      >
+        Page de profil utilisateur
+      </Link>
     </>
   );
 }

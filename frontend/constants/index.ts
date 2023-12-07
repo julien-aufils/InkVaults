@@ -4,7 +4,7 @@ export const BOOKSHARE_FACTORY_CONTRACT_LOCAL =
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const BOOKSHARE_FACTORY_CONTRACT_MUMBAI =
-  "0xa557F30d468ED50A4C44e0c3afa052DFbFeF6B57";
+  "0xc2114E47324BF1f42117C32915D8B46853dD7B30";
 
 export const bookshareFactoryAddress = isProductionState
   ? BOOKSHARE_FACTORY_CONTRACT_MUMBAI
@@ -138,6 +138,19 @@ export const abiBookshareFactory = [
     name: "createBookShare",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllBookShares",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
