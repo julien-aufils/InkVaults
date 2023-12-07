@@ -253,6 +253,7 @@ const ModalBuyBookshare: FC<ModalBuyBookshareProps> = ({
                   <Flex justify="center" gap="4rem">
                     <PercentBookshareInfo
                       percentage={selectedBookshare.price.percentage}
+                      nbOfShares={undefined}
                     />
                     <Flex align="center" gap="1rem">
                       <IconButton

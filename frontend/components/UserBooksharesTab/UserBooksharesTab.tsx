@@ -24,7 +24,7 @@ const UserBooksharesTab = () => {
 
   const authorsAddresses = authorsData
     .map((author: Author) => author.localAddr)
-    .filter((addr) => addr);
+    .filter((addr: string) => addr);
 
   const getBooksharesAddr = async () => {
     try {
@@ -39,10 +39,10 @@ const UserBooksharesTab = () => {
     }
   };
 
-  const getNumberOfShares = async (bookshareAddr) => {
+  const getNumberOfShares = async (bookshareAddr: string) => {
     try {
       const sharesNb = await readContract({
-        address: bookshareAddr,
+        address: bookshareAddr as any,
         abi: abiBookshare,
         functionName: "balanceOf",
         args: [address],
@@ -92,9 +92,9 @@ const UserBooksharesTab = () => {
   };
   const fetchData = async () => {
     try {
-      const booksharesAddr = await getBooksharesAddr();
-      const sharesPromises = booksharesAddr.map(async (addr) => {
-        const nbOfShares = await getNumberOfShares(addr);
+      const booksharesAddr: any = await getBooksharesAddr();
+      const sharesPromises = booksharesAddr.map(async (addr: string) => {
+        const nbOfShares: any = await getNumberOfShares(addr);
         if (nbOfShares > 0) {
           const uri = await getBookshareURI(addr);
           return { address: addr, nbOfShares, uri };

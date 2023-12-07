@@ -27,12 +27,12 @@ const UserBooksharePayOut: React.FC<UserBooksharePayOutProps> = ({
   //   }
   // };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const transactionsEvents = await getTransactionsEvents();
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const transactionsEvents = await getTransactionsEvents();
+  //   };
+  //   fetchData();
+  // }, []);
 
   return <div>UserBooksharePayOut</div>;
 };
