@@ -1,42 +1,53 @@
-import { useState, useEffect, FC } from "react";
-import { Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useContractRead, useAccount } from "wagmi";
 import { readContract } from "wagmi/actions";
 import { fetchFromIPFS } from "@/utils/ipfs";
-import { formatEther } from "viem";
-import { MATIC_TO_USD_RATE } from "@/constants";
-import authorsData from "/data/authors.json";
-
-import Bookshare from "@/types/Bookshare";
-import Author from "@/types/Author";
-
-import BookshareInfo from "../BookshareInfo/BookshareInfo";
-import ModalBuyBookshare from "../ModalBuyBookshare/ModalBuyBookshare";
-import BuyBookshareButton from "../UI/BuyBookshareButton";
-import PercentBookshareInfo from "../UI/PercentBookshareInfo";
-
+import { Flex, Link, Image, Text } from "@chakra-ui/react";
 import {
-  bookshareFactoryAddress,
-  abiBookshareFactory,
   abiBookshare,
+  abiBookshareFactory,
+  bookshareFactoryAddress,
 } from "@/constants";
+import authorsData from "/data/authors.json";
+import Author from "@/types/Author";
+import Bookshare from "@/types/Bookshare";
 
-const BooksharesTabContent: FC<{
-  authorId: number;
-  authorAddr: string;
-  setTabIndex: Function;
-}> = ({ authorId, authorAddr, setTabIndex }) => {
-  const [authorBookshares, setAuthorBookshares] = useState<Bookshare[]>([]);
+import PercentBookshareInfo from "../UI/PercentBookshareInfo";
+import UserBookshareInfo from "../UserBookshareInfo/UserBookshareInfo";
 
-  // Request to BookshareFactory contract : Get all the bookshares addresses of authorId
+const UserBooksharesTab = () => {
+  const [userBookshares, setUserBookshares] = useState<Bookshare[]>([]);
+  const [selectedBookshare, setSelectedBookshare] = useState<number | null>(
+    null
+  );
+  const { address, isConnected } = useAccount();
+
+  const authorsAddresses = authorsData
+    .map((author: Author) => author.localAddr)
+    .filter((addr: string) => addr);
+
   const getBooksharesAddr = async () => {
     try {
       const booksharesAddr = await readContract({
         address: bookshareFactoryAddress,
         abi: abiBookshareFactory,
-        functionName: "getBookSharesByAuthor",
-        args: [authorAddr],
+        functionName: "getAllBookShares",
       });
       return booksharesAddr;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNumberOfShares = async (bookshareAddr: string) => {
+    try {
+      const sharesNb = await readContract({
+        address: bookshareAddr as any,
+        abi: abiBookshare,
+        functionName: "balanceOf",
+        args: [address],
+      });
+      return Number(sharesNb);
     } catch (error) {
       console.log(error);
     }
@@ -79,52 +90,51 @@ const BooksharesTabContent: FC<{
       throw error;
     }
   };
+  const fetchData = async () => {
+    try {
+      const booksharesAddr: any = await getBooksharesAddr();
+      const sharesPromises = booksharesAddr.map(async (addr: string) => {
+        const nbOfShares: any = await getNumberOfShares(addr);
+        if (nbOfShares > 0) {
+          const uri = await getBookshareURI(addr);
+          return { address: addr, nbOfShares, uri };
+        } else {
+          return null;
+        }
+      });
+
+      const sharesResults = await Promise.all(sharesPromises);
+      const filteredResults = sharesResults.filter((result) => result !== null);
+
+      const URIs = filteredResults.map((result) => result.uri);
+      const Addrs = filteredResults.map((result) => result.address);
+      const nbOfShares = filteredResults.map((result) => result.nbOfShares);
+
+      const booksharesMetadata = await getMetadataForBookshares(URIs, Addrs);
+
+      const userBookshares = booksharesMetadata.map((metadata, index) => ({
+        ...metadata,
+        nbOfShares: nbOfShares[index],
+      }));
+
+      setUserBookshares(userBookshares);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const booksharesAddr: any = await getBooksharesAddr();
-        const bookshareURIs = await Promise.all(
-          booksharesAddr.map(async (bookshareAddr: string) => {
-            return await getBookshareURI(bookshareAddr);
-          })
-        );
-
-        const bookshares = await getMetadataForBookshares(
-          bookshareURIs,
-          booksharesAddr
-        );
-        setAuthorBookshares(bookshares);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
-    };
-
     fetchData();
-  }, [authorId]);
-
-  const selectedAuthor = authorsData.find(
-    (author: Author) => author.id === authorId
-  );
-
-  const [selectedBookshare, setSelectedBookshare] = useState<number | null>(
-    null
-  );
+  }, []);
 
   const handleClick = (index: number) => {
     setSelectedBookshare(index);
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <Flex w="100%" direction="column" gap="2rem">
-      {authorBookshares?.map((bookshare: Bookshare, index: number) => {
+      {userBookshares?.map((bookshare: Bookshare, index: number) => {
         const isSelected = selectedBookshare === index;
-        const booksharePrice = (
-          parseFloat(formatEther(bookshare.price?.amount as any)) *
-          MATIC_TO_USD_RATE
-        ).toFixed(3);
         return (
           <Flex
             backgroundColor="#111318"
@@ -150,10 +160,9 @@ const BooksharesTabContent: FC<{
                   {bookshare.title}
                 </Text>
                 <Flex direction="column" gap="0.6rem">
-                  <BookshareInfo
+                  <UserBookshareInfo
                     bookshare={bookshare}
                     isSelected={isSelected}
-                    booksharePrice={booksharePrice as any}
                   />
                 </Flex>
               </Flex>
@@ -166,7 +175,9 @@ const BooksharesTabContent: FC<{
             >
               <PercentBookshareInfo
                 percentage={bookshare.price?.percentage}
-                nbOfShares={undefined}
+                nbOfShares={
+                  bookshare.nbOfShares ? bookshare.nbOfShares : undefined
+                }
               />
 
               {!isSelected ? (
@@ -180,22 +191,13 @@ const BooksharesTabContent: FC<{
                 </Link>
               ) : (
                 <Flex direction="column" gap="1rem">
-                  <BuyBookshareButton
-                    onClick={onOpen}
-                    amount={booksharePrice as any}
-                    isDisabled={false}
-                  />
                   <Link
                     fontSize="sm"
-                    bgGradient="linear(97deg, #00C1FF 0.71%, #3337FF 102.37%)"
-                    bgClip="text"
-                    _hover={{ textColor: "#fff", textDecoration: "underline" }}
+                    textColor="#9EAABD"
                     textAlign="center"
-                    onClick={() => {
-                      setTabIndex(3);
-                    }}
+                    textDecoration="underline"
                   >
-                    See 12 offers on marketplace
+                    Make a sell offer
                   </Link>
                 </Flex>
               )}
@@ -203,19 +205,8 @@ const BooksharesTabContent: FC<{
           </Flex>
         );
       })}
-      <ModalBuyBookshare
-        onOpen={onOpen}
-        onClose={onClose}
-        isOpen={isOpen}
-        selectedBookshare={
-          selectedBookshare !== null
-            ? authorBookshares[selectedBookshare]
-            : null
-        }
-        selectedAuthor={selectedAuthor}
-      />
     </Flex>
   );
 };
 
-export default BooksharesTabContent;
+export default UserBooksharesTab;
