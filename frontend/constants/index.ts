@@ -4,7 +4,7 @@ export const BOOKSHARE_FACTORY_CONTRACT_LOCAL =
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const BOOKSHARE_FACTORY_CONTRACT_MUMBAI =
-  "0xa77eBfcB8fba9cf72282Cd3a670012B8e11fb684";
+  "0x4187E6B6B1C636D261a3293e11A89ecb2a9256df";
 
 export const bookshareFactoryAddress = isProductionState
   ? BOOKSHARE_FACTORY_CONTRACT_MUMBAI
@@ -619,7 +619,7 @@ export const abiBookshare = [
     ],
     name: "distributeRoyalties",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
