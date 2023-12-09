@@ -5,7 +5,7 @@ async function createBookShare(
   factory: any,
   name: string,
   symbol: string,
-  author: any,
+  authorAddress: string,
   totalShares: number,
   pricePerShare: string,
   baseURI: string
@@ -13,7 +13,7 @@ async function createBookShare(
   await factory.createBookShare(
     name,
     symbol,
-    author.address,
+    authorAddress,
     totalShares,
     pricePerShare,
     baseURI
@@ -21,8 +21,6 @@ async function createBookShare(
 }
 
 async function main() {
-  const [owner, addr1, addr2] = await ethers.getSigners();
-
   const bookshareFactory = await ethers.deployContract("BookShareFactory");
   await bookshareFactory.waitForDeployment();
 
@@ -30,7 +28,7 @@ async function main() {
     {
       name: "The Three-Body Problem",
       symbol: "TBP",
-      author: addr1,
+      authorAddress: "0xb0e9769001a3B7eA2440b492426484FD10B16183",
       totalShares: 150,
       pricePerShare: "1500000000000000",
       baseURI:
@@ -39,7 +37,7 @@ async function main() {
     {
       name: "The Dark Forest",
       symbol: "TDF",
-      author: addr1,
+      authorAddress: "0xb0e9769001a3B7eA2440b492426484FD10B16183",
       totalShares: 200,
       pricePerShare: "2000000000000000",
       baseURI:
@@ -48,7 +46,7 @@ async function main() {
     {
       name: "Death's End",
       symbol: "DED",
-      author: addr1,
+      authorAddress: "0xb0e9769001a3B7eA2440b492426484FD10B16183",
       totalShares: 100,
       pricePerShare: "1000000000000000",
       baseURI:
@@ -57,7 +55,7 @@ async function main() {
     {
       name: "Alice au pays des cryptos",
       symbol: "APC",
-      author: addr2,
+      authorAddress: "0xfFA13a19DFdAaD83ecD0c089C0A05752984cD026",
       totalShares: 50,
       pricePerShare: "5000000000000000",
       baseURI:
@@ -70,7 +68,7 @@ async function main() {
       bookshareFactory,
       data.name,
       data.symbol,
-      data.author,
+      data.authorAddress,
       data.totalShares,
       data.pricePerShare,
       data.baseURI
