@@ -37,7 +37,6 @@ contract BookShareFactory is Ownable {
         string memory _name,
         string memory _symbol,
         address _author,
-        uint256 _rightsPercentage,
         uint256 _totalShares,
         uint256 _pricePerShare,
         string memory _baseURI
