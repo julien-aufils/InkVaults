@@ -163,6 +163,7 @@ contract BookShare is ERC721, Ownable, ReentrancyGuard {
      * @dev Function for holders to withdraw their royalties.
      */
     function withdrawRoyalties() external nonReentrant {
+        require(bookShareData.totalRoyalties > 0, "No royalties distributed");
         require(balanceOf(msg.sender) >= 1, "You don't own any shares");
         require(withdrawnRoyalties[msg.sender] == 0, "Already withdrawn");
 
