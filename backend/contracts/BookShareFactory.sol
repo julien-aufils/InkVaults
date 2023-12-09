@@ -13,7 +13,6 @@ contract BookShareFactory is Ownable {
     event BookShareCreated(
         address indexed bookShareContract,
         address indexed author,
-        uint256 rightsPercentage,
         uint256 totalShares,
         uint256 pricePerShare
     );
@@ -30,7 +29,6 @@ contract BookShareFactory is Ownable {
      * @dev Creates a new BookShare contract.
      * @param _name The name of the BookShare contract.
      * @param _symbol The symbol of the BookShare contract.
-     * @param _rightsPercentage The percentage of rights ceded by the author.
      * @param _totalShares The total number of Book Shares.
      * @param _pricePerShare The price of each Book Share in Wei.
      * @param _baseURI The base URI for token metadata.
@@ -39,7 +37,6 @@ contract BookShareFactory is Ownable {
         string memory _name,
         string memory _symbol,
         address _author,
-        uint256 _rightsPercentage,
         uint256 _totalShares,
         uint256 _pricePerShare,
         string memory _baseURI
@@ -49,7 +46,6 @@ contract BookShareFactory is Ownable {
             _name,
             _symbol,
             _author,
-            _rightsPercentage,
             _totalShares,
             _pricePerShare,
             _baseURI,
@@ -66,7 +62,6 @@ contract BookShareFactory is Ownable {
         emit BookShareCreated(
             address(newBookShare),
             _author,
-            _rightsPercentage,
             _totalShares,
             _pricePerShare
         );

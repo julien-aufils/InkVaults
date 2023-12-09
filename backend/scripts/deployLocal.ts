@@ -12,7 +12,6 @@ async function main() {
     "The Three-Body Problem",
     "TBP",
     addr1.address,
-    1500,
     150,
     "1500000000000000",
     "ipfs://bafybeieykkopgeymc2qrh6dc2dcqzfiojwomo55unwc2jzhzp6aq4rs3l4"
@@ -22,7 +21,6 @@ async function main() {
     "The Dark Forest",
     "TDF",
     addr1.address,
-    2000,
     200,
     "2000000000000000",
     "ipfs://bafybeigcjqcvnv7muytgqunxaukqvu2skjkkc3a3gofv2evxbipurbcj7e"
@@ -32,7 +30,6 @@ async function main() {
     "Death's End",
     "DED",
     addr1.address,
-    1000,
     100,
     "1000000000000000",
     "ipfs://bafybeiaej3c34f7ce6q2btdhb2vg65ykyyihgfnyp32nf4w7wuv3betwam"
@@ -42,7 +39,6 @@ async function main() {
     "Alice au pays des cryptos",
     "APC",
     addr2.address,
-    2500,
     50,
     "5000000000000000",
     "ipfs://bafybeiglcsfnsvrpaeei2lmvrxylf7zygjf2ihlfr47y2awhwlx4umhvda"

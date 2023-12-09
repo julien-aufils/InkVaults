@@ -4,7 +4,7 @@ export const BOOKSHARE_FACTORY_CONTRACT_LOCAL =
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const BOOKSHARE_FACTORY_CONTRACT_MUMBAI =
-  "0xa77eBfcB8fba9cf72282Cd3a670012B8e11fb684";
+  "0x8ce44873FF69aFcDb69d3A2A817bc7496a1D8b54";
 
 export const bookshareFactoryAddress = isProductionState
   ? BOOKSHARE_FACTORY_CONTRACT_MUMBAI
@@ -59,12 +59,6 @@ export const abiBookshareFactory = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "rightsPercentage",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
         name: "totalShares",
         type: "uint256",
       },
@@ -113,11 +107,6 @@ export const abiBookshareFactory = [
         internalType: "address",
         name: "_author",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_rightsPercentage",
-        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -224,11 +213,6 @@ export const abiBookshare = [
         internalType: "address",
         name: "_authorAddr",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_rightsPercentage",
-        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -380,6 +364,11 @@ export const abiBookshare = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "ReentrancyGuardReentrantCall",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -441,6 +430,12 @@ export const abiBookshare = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "quantity",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "amount",
         type: "uint256",
       },
@@ -469,8 +464,34 @@ export const abiBookshare = [
   },
   {
     anonymous: false,
-    inputs: [],
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "totalRoyalties",
+        type: "uint256",
+      },
+    ],
     name: "RoyaltiesDistributed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "holder",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "RoyaltiesWithdrawn",
     type: "event",
   },
   {
@@ -561,17 +582,17 @@ export const abiBookshare = [
       },
       {
         internalType: "uint256",
-        name: "rightsPercentage",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
         name: "marketFeePercentage",
         type: "uint256",
       },
       {
         internalType: "uint256",
         name: "distributionFeePercentage",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "totalRoyalties",
         type: "uint256",
       },
       {
@@ -610,16 +631,10 @@ export const abiBookshare = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_revenue",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     name: "distributeRoyalties",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -908,6 +923,32 @@ export const abiBookshare = [
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdrawRoyalties",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "withdrawnRoyalties",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];

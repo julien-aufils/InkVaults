@@ -16,7 +16,7 @@ const config: HardhatUserConfig = {
     apiKey: process.env.POLYGONSCAN_API_KEY,
   },
   sourcify: {
-    enabled: true,
+    enabled: false,
   },
   solidity: {
     version: "0.8.20",

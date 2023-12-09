@@ -4,13 +4,14 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title BookShare
  * @dev ERC-721 token representing a Book Share.
  * @author Julien Aufils
  */
-contract BookShare is ERC721, Ownable {
+contract BookShare is ERC721, Ownable, ReentrancyGuard {
     using Strings for uint;
     uint256 private tokenIds;
 
@@ -19,24 +20,30 @@ contract BookShare is ERC721, Ownable {
         uint256 totalShares;
         uint256 sharesAvailable;
         uint256 pricePerShare;
-        uint256 rightsPercentage;
         uint256 marketFeePercentage;
         uint256 distributionFeePercentage;
+        uint256 totalRoyalties;
         string baseURI; // Link ipfs://CID/
     }
 
     BookShareData public bookShareData;
     address public platformAddr;
 
-    event BookShareSold(address indexed buyer, uint256 amount);
-    event RoyaltiesDistributed();
+    mapping(address => uint256) public withdrawnRoyalties;
+
+    event BookShareSold(
+        address indexed buyer,
+        uint256 quantity,
+        uint256 amount
+    );
+    event RoyaltiesDistributed(uint256 totalRoyalties);
+    event RoyaltiesWithdrawn(address indexed holder, uint256 amount);
 
     /**
      * @dev Constructor to initialize the Book Share.
      * @param _name The name of the BookShare contract.
      * @param _symbol The symbol of the BookShare contract.
      * @param _authorAddr The address of the author who created the Book Share.
-     * @param _rightsPercentage The percentage of rights ceded by the author.
      * @param _totalShares The total number of Book Shares.
      * @param _pricePerShare The price of each Book Share in Wei.
      * @param _baseURI The base URI for token metadata.
@@ -45,7 +52,6 @@ contract BookShare is ERC721, Ownable {
         string memory _name,
         string memory _symbol,
         address _authorAddr,
-        uint256 _rightsPercentage,
         uint256 _totalShares,
         uint256 _pricePerShare,
         string memory _baseURI,
@@ -53,13 +59,13 @@ contract BookShare is ERC721, Ownable {
     ) Ownable(_platformAddr) ERC721(_name, _symbol) {
         bookShareData = BookShareData({
             authorAddr: _authorAddr,
-            rightsPercentage: _rightsPercentage,
             totalShares: _totalShares,
             pricePerShare: _pricePerShare,
             baseURI: _baseURI,
             sharesAvailable: _totalShares, // Number of Book Shares still available
             marketFeePercentage: 500, // Platform fee percentage for primary and secondary market
-            distributionFeePercentage: 300 // Platform fee percentage for royalty distribution
+            distributionFeePercentage: 300, // Platform fee percentage for royalty distribution
+            totalRoyalties: 0
         });
         platformAddr = _platformAddr;
     }
@@ -93,7 +99,7 @@ contract BookShare is ERC721, Ownable {
      * @dev Function to buy Book Shares.
      * @param _quantity The quantity of Book Shares to buy.
      */
-    function buyShares(uint256 _quantity) external payable {
+    function buyShares(uint256 _quantity) external payable nonReentrant {
         require(_quantity > 0, "Quantity must be greater than 0");
         require(
             bookShareData.sharesAvailable >= _quantity,
@@ -123,21 +129,17 @@ contract BookShare is ERC721, Ownable {
         }
 
         // Emit an event for the Book Shares being sold
-        emit BookShareSold(msg.sender, totalCost);
+        emit BookShareSold(msg.sender, _quantity, totalCost);
     }
 
     /**
      * @dev Function to distribute royalties to all holders.
-     * @param _revenue The total revenue for calculating royalties.
      */
-    function distributeRoyalties(uint256 _revenue) external onlyOwner {
-        require(_revenue > 0, "Revenue must be greater than 0");
-
-        // Calculate royalties based on the author's percentage ceded
-        uint256 royalties = _revenue * bookShareData.rightsPercentage;
+    function distributeRoyalties() external payable onlyOwner {
+        require(msg.value > 0, "Revenue must be greater than 0");
 
         // Calculate distribution fee
-        uint256 distributionFee = (royalties *
+        uint256 distributionFee = (msg.value *
             bookShareData.distributionFeePercentage) / 10000;
 
         // Transfer distribution fee to platform address (replace with your platform's address)
@@ -145,22 +147,38 @@ contract BookShare is ERC721, Ownable {
         require(successFee, "Failed to transfer fee");
 
         // Calculate remaining royalties
-        uint256 remainingRoyalties = royalties - distributionFee;
+        uint256 remainingRoyalties = msg.value - distributionFee;
 
-        // Distribute remaining royalties proportionally to all holders
-        for (uint256 i = 0; i < bookShareData.totalShares; i++) {
-            address holder = ownerOf(i);
+        // Reset totalRoyalties to zero before distribution
+        bookShareData.totalRoyalties = 0;
 
-            // Calculate holder's share of royalties
-            uint256 holderShare = (balanceOf(holder) * remainingRoyalties) /
-                (bookShareData.totalShares - bookShareData.sharesAvailable);
-
-            // Transfer royalties to the holder
-            (bool successRoyalties, ) = holder.call{value: holderShare}("");
-            require(successRoyalties, "Failed to transfer royalties");
-        }
+        // Update total royalties
+        bookShareData.totalRoyalties += remainingRoyalties;
 
         // Emit an event for royalties distribution
-        emit RoyaltiesDistributed();
+        emit RoyaltiesDistributed(bookShareData.totalRoyalties);
+    }
+
+    /**
+     * @dev Function for holders to withdraw their royalties.
+     */
+    function withdrawRoyalties() external nonReentrant {
+        require(bookShareData.totalRoyalties > 0, "No royalties distributed");
+        require(balanceOf(msg.sender) >= 1, "You don't own any shares");
+        require(withdrawnRoyalties[msg.sender] == 0, "Already withdrawn");
+
+        // Calculate holder's share of royalties
+        uint256 holderShare = (bookShareData.totalRoyalties *
+            balanceOf(msg.sender)) / bookShareData.totalShares;
+
+        // Update withdrawnRoyalties to prevent multiple withdrawals
+        withdrawnRoyalties[msg.sender] = holderShare;
+
+        // Transfer royalties to the holder
+        (bool successRoyalties, ) = msg.sender.call{value: holderShare}("");
+        require(successRoyalties, "Failed to transfer royalties");
+
+        // Emit an event for royalties withdrawal
+        emit RoyaltiesWithdrawn(msg.sender, holderShare);
     }
 }
