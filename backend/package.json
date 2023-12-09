@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "deploy:local": "npx hardhat run scripts/deployLocal.ts --network localhost",
+    "deploy:mumbai": "npx hardhat run scripts/deployMumbai.ts --network polygon_mumbai"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
