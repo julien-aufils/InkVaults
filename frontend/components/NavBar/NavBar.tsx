@@ -81,7 +81,7 @@ const NavBar = () => {
           <Image src="/flag/unitedKingdom.svg" />
           <Image src="/bellNotification.svg" />
         </Flex>
-        <ConnectButton />
+        <ConnectButton chainStatus="none" />
       </Flex>
     </Flex>
   );
