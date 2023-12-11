@@ -4,11 +4,11 @@
 
 InkVaults est une plateforme novatrice conçue pour répondre aux besoins des auteurs, des maisons d’édition et des passionnés de la littérature. Notre vision est de créer une Communauté d'Édition Décentralisée où l'écriture, l'édition, la promotion et la distribution d'œuvres littéraires deviennent transparentes, accessibles et rentables pour tous.
 
-### Vidéo de présentation
+### [Vidéo de présentation](https://www.loom.com/share/add79e5d7b28469a8c968cc40cde5b79?sid=4a7da20c-2a7f-4697-bc5e-db4290557108)
 
 ### Lien vers le site déployé : [InkVaults](https://inkvaults.vercel.app/) avec Vercel Platform
 
-## Front-end (dApp)
+## Front-end (dApp) :
 
 ### Technologies
 
